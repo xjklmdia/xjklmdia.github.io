@@ -1,0 +1,179 @@
+*{
+  font-family: 'Space Mono', monospace;
+  box-sizing: border-box;
+}
+
+body{
+  font-family: 'Space Mono', monospace;
+  /* margin-left: 3rem; */
+  /* font-family: */
+
+}
+
+p{
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+   letter-spacing: 0.05rem;
+   line-height: 1.7rem;
+   max-width: 40rem;
+   margin-bottom: 2.5rem;
+}
+
+h2{
+  font-family: 'Space Mono', monospace;
+  /* padding: 2rem; */
+  /* color: pink; */
+}
+
+h1{
+  text-align: center;
+}
+
+.article-maintitle{
+
+}
+
+.article-introimg{
+  width:100%;
+  height:auto;
+}
+
+.spacer{
+  padding: 2.5rem;
+}
+
+.active{
+  background-color: blue;
+  /* padding-right: 50rem; */
+}
+.navbar-container{
+  padding-bottom: .5rem;
+}
+
+.navbar-container{
+  padding-bottom: .5rem;
+}
+
+.navbar .icon{
+  display:none;
+}
+
+.navbar a{
+  padding-top: 2px;
+  /* font-weight: bold; */
+  float:left;
+  display:block;
+  /* background-color:linear-gradient(to right, red , yellow); */
+  font-size: 1.25rem;
+  text-align: center;
+  color:black;
+  padding: .6rem 1rem;
+  margin-right:3rem;
+  text-decoration: none;
+  border-top: 5px white solid;
+}
+/* cant get border to extend because of the padding issue, may have to reference codrops. */
+.navbar a:hover{
+  /* background-color: purple; */
+  border-top: 5px blue solid;
+}
+/* need to make image scale with the div */
+/* how did I do this last time? */
+.nav-right{
+  float:right;
+}
+
+
+@media screen and (max-width: 37.5rem){
+  .navbar a:not(:first-child){
+    display:none;
+  }
+  .navbar a.icon{
+    float:right;
+    display:block;
+  }
+
+  .navbarresponsive{
+    position:relative;
+  }
+
+  .navbarresponsive a.icon{
+    position:absolute;
+    right:0;
+    top:0;
+  }
+
+  .navbarresponsive a{
+    float:none;
+    display:block;
+    text-align: left;
+    font-size: 1.25rem;
+    text-align: center;
+    color:black;
+    padding: .6rem 1rem;
+    margin-right:3rem;
+    text-decoration: none;
+    border-top: 5px white solid;
+  }
+}
+
+@media screen and (max-width:62.5rem){
+  .nav-right{
+    display:none;
+  }
+}
+
+.tag-line{
+  text-align: center;
+}
+.spacer{
+  padding: 2.5rem;
+}
+
+/* cant get border to extend because of the padding issue, may have to reference codrops. */
+
+
+.main-section {
+   margin-top: 15%;
+   margin-bottom: 5rem;
+   margin-left: 2rem;
+   margin-right: 2rem;
+}
+
+
+.detail-intro {
+   font-size: 1.3rem;
+   line-height: 2.2rem;
+}
+
+.main-content {
+   max-width: 45rem;
+   margin-left: 2rem;
+   margin-right: 2rem;
+}
+
+.intro{
+  text-align: center;
+}
+
+@media (min-width: 28rem) {
+   .main-content {
+      margin-left: auto;
+      margin-right: auto;
+   }
+
+   .project-title {
+      margin-left: 0;
+   }
+
+
+   p {
+      margin-bottom: 4rem;
+   }
+
+
+   .main-section {
+      margin-left: 2rem;
+      margin-right: 0;
+   }
+}

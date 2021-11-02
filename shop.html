@@ -1,0 +1,92 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gallery</title>
+    <link href="css/normalize.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/grid.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  </head>
+  <body>
+    <div class= "navbar-container">
+      <div class="navbar" id="topnav">
+      <nav>
+        <a href="index.html" class = "active">Logo</a>
+        <a href = "about.html">About Us</a>
+          <a href = "tickets.html">Tickets</a>
+          <a href="articles-home.html"> News </a>
+          <a href="shop.html">Shop</a>
+          <div class = "nav-right">
+            <a href = "#">Contact Us</a>
+            </div>
+            <a href="javascript:void(0);" class="icon" onclick="menuRespFunction()" aria-label="hamburger mobile menu">
+            <i class = "fa fa-bars"></i>
+            </a>
+      </nav>
+      </div>
+      </div>
+    <section class="header">
+    <!-- TODO: Complete header -->
+    </section>
+    <section class="content grid shop-page">
+        <section class="sidenav">
+          <h2>Categories</h2>
+            <ul>
+                <li><a href="shop.html">All Items</a></li>
+                <li><a href="shop-books.html">Books</a></li>
+                <li><a href="shop-calendars.html">Calendars</a></li>
+                <li><a href="shop-decor.html">Decor</a></li>
+
+            </ul>
+
+        </section>
+
+        <section class="shop-area">
+            <h2>All Items</h2>
+            <div class="grid add-gutters three-column">
+              <a class="gridelement shop-item" href="itemcloseup-calendar.html"> <!-- img from http://www.shopngc.ca/boutique/en/benjamin-chee-chee-2022-wall-calendar.html -->
+                    <img class="gridimage" src="img/canoe-calendar.png" alt="Inuit Art Calendar"></img>
+                    <h3>2022 Calendar</h3>
+                    <h3 class="price">$18</h3>
+              </a>
+                <a class="gridelement shop-item" href="itemcloseup-Magnetic.html"><!-- img from  http://www.shopngc.ca/boutique/en/magnetic-north-imagining-canada-in-painting-19101940-en.html-->
+                    <img class="gridimage" src="img/magnetic-north.png" alt="Book titled The Magnetic North"></img>
+                    <h3>Magnetic North</h3>
+                    <h3 class="price">$75</h3>
+                </a>
+
+                <a class="gridelement shop-item" href="itemcloseup-ornament.html"><!-- img from http://www.shopngc.ca/boutique/en/ifriends-i-ornament-clone.html -->
+                    <img class="gridimage" src="img/friends-ornament.png" alt="Christmas ornament of two geese"></img>
+                    <h3>Friends Ornament</h3>
+                    <h3 class="price">$12</h3>
+                </a>
+
+                <a  class="gridelement shop-item" href="itemcloseup-pillow.html"><!-- img from http://www.shopngc.ca/boutique/en/ienchanted-owl-i-cushion-cover-clone.html -->
+                    <img class="gridimage" src="img/enchanted-owl.png" alt="Owl cushion cover"></img>
+                    <h3>Cushion Cover</h3>
+                    <h3 class="price">$17</h3>
+                </a>
+
+                <a  class="gridelement shop-item" href="itemcloseup-vase.html"><!-- img from  -->
+                    <img class="gridimage" src="img/the-star-vase.png" alt="The star vase"></img>
+                    <h3><i>The Star</i> Vase</h3>
+                    <h3 class="price">$75</h3>
+                </a>
+
+                <a class="gridelement shop-item" href="itemcloseup-abstraction.html"><!-- img from http://www.shopngc.ca/boutique/en/ithe-advent-of-abstraction-russia-19141923-i-en.html  -->
+                    <img class="gridimage" src="img/abstraction-book.png" alt="Russian book about Abstraction"></img>
+                    <h3>Advent of Abstraction</h3>
+                    <h3 class="price">$40</h3>
+                </a>
+            </div>
+        </section>
+    </section>
+    <script src="js/menu.js"></script>
+  </body>
+</html>

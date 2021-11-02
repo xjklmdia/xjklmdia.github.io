@@ -1,0 +1,763 @@
+*{
+  font-family: 'Space Mono', monospace;
+  box-sizing: border-box;
+}
+
+a{
+ color:black;
+ text-decoration: inherit;
+}
+
+a:hover{
+  color:white;
+}
+
+body{
+  font-family: 'Space Mono', monospace;
+  margin: 2rem;
+}
+
+p{
+  font-family: 'Nunito', sans-serif;
+   letter-spacing: 0.05rem;
+   line-height: 1.5rem;
+   max-width: 40rem;
+   margin-bottom: 2.5rem;
+}
+
+h2{
+  font-family: 'Space Mono', monospace;
+  /* padding: 2rem; */
+  /* color: pink; */
+}
+
+ul{
+
+  padding-left: 0;
+}
+
+section{
+  margin: 2rem;
+}
+
+.intro{
+  font-size: 3rem;
+  max-width: 75rem;
+  line-height: 3.5rem;
+}
+
+.modal-paragraph{
+  font-size:.75rem;
+}
+
+.grid-op{
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+}
+
+@media screen and (max-width:59.375rem){
+  .grid-op{
+    grid-template-columns:1fr;
+  }
+}
+
+.op-ui{
+  padding-top: 4rem;
+  margin: 2rem;
+}
+
+.operationuibuttons{
+  background-color: #000000;
+  color:white;
+  border: none;
+  margin: .5rem;
+  padding:.5rem;
+  transition-timing-function: 0.5s ease-in;
+}
+
+.operationuibuttons:hover{
+  background-color: #333333;
+}
+
+td,th{
+  /* border:1px solid black; */
+  text-align: left;
+  padding: .5rem;
+}
+
+tr:hover{
+  background-color: #dddddd;
+}
+
+.dow{
+  width:30rem;
+  font-weight: bold;
+}
+.carosel{
+  align-items: center;
+}
+
+img.slideimg{
+  width:100%;
+}
+
+/*Slideshow Container CSS*/
+.slide-showcontainer{
+  max-width: 100%;
+  position:relative;
+  margin:auto;
+}
+
+.mySlides{
+  display:none;
+}
+
+.fade{
+  animation-name: fade;
+  animation-duration: 4s;
+}
+/*carosel end*/
+
+.modalgrid{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  grid-column-gap: .2rem;
+}
+
+.modal-paragraph{
+  font-size:.75rem;
+}
+
+.sidenav a:hover, .sidenav a:focus{
+  background-color: blue;
+  color:white;
+  text-decoration: none;
+}
+
+.sidenav a{
+  color: blue;
+  text-decoration: none;
+}
+
+.about-frame a:hover, .sidenav a:focus{
+  background-color: blue;
+  color:white;
+  text-decoration: none;
+}
+.about-frame a{
+  color:blue;
+  text-decoration: none;
+}
+
+p.about-frame-address {
+  font-family: 'Space Mono', monospace;
+  box-sizing: border-box;
+}
+
+.about-frame-content-block{
+  display:inline-block;
+  vertical-align: top;
+  padding: 0.5rem;
+}
+
+/*
+Article elements start
+*/
+
+.article-element{
+  border: 1px solid black;
+  max-width: 75rem;
+  padding: .5rem;
+  display:grid;
+  grid-template-columns: .35fr 1fr;
+  grid-gap: 2rem;
+  margin-top: 2rem;
+  transition: 0.5s;
+}
+
+.article-element:hover{
+  background-color: blue;
+  color:white;
+}
+
+.article-title{
+  margin-top: 0rem;
+  margin-bottom: .5rem;
+}
+
+.a-lcolumn{
+  padding-top: 1rem;
+  max-width: 50rem;
+}
+
+.readmore{
+  padding-top: 5.5rem;
+}
+
+.aelement-para{
+  margin-bottom: 0rem;
+}
+
+.a-img{
+  width:100%;
+  height:auto;
+}
+
+@media screen and (max-width: 40.625rem){
+  .article-element{
+    display:grid;
+    border: 1px solid black;
+    padding: .5rem;
+    grid-template-columns: 1fr;
+    grid-gap: .5rem;
+    margin-top: 2rem;
+  }
+
+  .aelement-para{
+    margin-top: 0rem;
+  }
+
+}
+
+@media screen and (max-width: 32.3125rem){
+
+  .intro{
+    font-size: 1rem;
+    max-width: 75rem;
+    line-height: 1.5rem;
+  }
+
+}
+
+
+/* Article Element End*/
+.toCart {
+  background-color: black;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 25px;
+}
+
+.toCart2 {
+  background-color: black;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 25px;
+}
+
+
+h1.store-title{
+  /* text-align: center; */
+  /* background-color: pink; */
+  margin:1.75rem;
+}
+
+.store-descriptiontext{
+  margin:1.75rem;
+  line-height: 1.5rem;
+  max-width: 25rem;
+}
+
+.column{
+  float:left;
+  width:50%;
+  padding:1rem;
+  /* For illustration only */
+  /* height:75rem; */
+}
+
+.cartModule > * {
+  /* margin:1.75rem; */
+  max-width:25rem;
+  align-items: center;
+  /* border: 1px solid black; */
+
+}
+
+.counter > * {
+  display:inline-block;
+
+}
+
+.counter{
+  padding-left: 6rem;
+}
+.counterCart{
+  padding-left: 7.5rem;
+}
+.toCart{
+  margin-top: 0rem;
+}
+
+.farm{
+padding: 2rem;
+}
+
+.store1{
+  /* background-color: blue; */
+  /* margin-left: 2rem; */
+}
+
+.store2{
+/* display:flex; */
+}
+
+.picture-storecentered{
+  /* border:1px solid black;
+  margin: auto;
+  width:100%;
+  height:auto; */
+}
+
+.grid-store{
+  display:grid;
+  grid-template-columns: .7fr 1fr;
+}
+
+/*Figure out why there are 2 of these*/
+
+.gridimage-store{
+  padding-top: 5rem;
+  display:block;
+  width:100%;
+  margin-left: auto;
+  margin-right: auto;
+
+}
+
+
+@media screen and (max-width: 62.5rem){
+  .grid-store{
+    grid-template-columns: 1fr;
+    align-items: center;
+  }
+
+  .gridimage-store{
+    padding-top: 5rem;
+    display:block;
+    width:75%;
+    margin-left: auto;
+    margin-right: auto;
+
+  }
+}
+
+
+.main-section {
+   margin-top: 15%;
+   margin-bottom: 5rem;
+   margin-left: 2rem;
+   margin-right: 2rem;
+}
+
+
+.detail-intro {
+   font-size: 1.3rem;
+   line-height: 2.2rem;
+}
+
+.main-content {
+   max-width: 45rem;
+   margin-left: 2rem;
+   margin-right: 2rem;
+}
+/* need to fix positioning of modal window*/
+.modal{
+  display:none;
+  position:fixed;
+  z-index:10000;
+  padding-top:10rem;
+left: 0;
+top: 0;
+  width:100%;
+  height:100%;
+  overflow:auto;
+  background-color: rgba(165,42,42art,0.4);
+}
+/*need to fix*/
+.modal-content{
+background-color: #ffffff;
+margin: auto;
+padding: 1rem;
+border: 1px solid #888;
+width: 80%;
+}
+
+.close{
+  color:#aaaaaa;
+  float:right;
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.modal-learnmore{
+  align-content: center;
+  display:block;
+  margin-left: auto;
+  margin-right:  auto;
+  width:50%;
+
+}
+
+.learnmore{
+  text-align: center;
+  margin: auto;
+}
+
+/* Module css */
+.expandedpelement{
+  max-width: 30rem;
+}
+
+
+.titleheader{
+  white-space: nowrap;
+  display:inline;
+}
+
+.titleclass{
+  display:inline-block;
+  margin:0rem;
+  padding-bottom:.75rem;
+}
+
+.tag-line{
+  text-align: center;
+}
+
+.subtitleblock{
+  display:inline-block;
+  margin-bottom: 0rem;
+  /* border: 1px solid black; */
+}
+
+.dateblock{
+/* padding-right:6.75rem; */
+margin-bottom: 0rem;
+}
+
+.navbar{
+  overflow: hidden;
+  padding-bottom: 1rem;
+  padding-bottom: 0rem;
+  /* background-color: #333333; */
+  /* background-color: #233332; */
+}
+
+.spacer{
+  padding: 2.5rem;
+}
+
+.active{
+  background-color: blue;
+  /* padding-right: 50rem; */
+}
+.navbar-container{
+  padding-bottom: .5rem;
+}
+
+.navbar .icon{
+  display:none;
+}
+
+.navbar a{
+  padding-top: 2px;
+  /* font-weight: bold; */
+  float:left;
+  display:block;
+  /* background-color:linear-gradient(to right, red , yellow); */
+  font-size: 1.25rem;
+  text-align: center;
+  color:black;
+  padding: .6rem 1rem;
+  margin-right:3rem;
+  text-decoration: none;
+  border-top: 5px white solid;
+}
+/* cant get border to extend because of the padding issue, may have to reference codrops. */
+.navbar a:hover{
+  /* background-color: purple; */
+  border-top: 5px blue soli d;
+}
+/* need to make image scale with the div */
+/* how did I do this last time? */
+.nav-right{
+  float:right;
+}
+
+
+/* @media screen and (max-width:18.125rem){
+  .icon{
+    float: left;
+  }
+} */
+
+@media screen and (max-width: 37.5rem){
+  .navbar a:not(:first-child){
+    display:none;
+  }
+  .navbar a.icon{
+    float:right;
+    display:block;
+  }
+
+  .navbarresponsive{
+    position:relative;
+  }
+
+  .navbarresponsive a.icon{
+    position:absolute;
+    right:0;
+    top:0;
+  }
+
+  .navbarresponsive a{
+    float:none;
+    display:block;
+    text-align: left;
+    font-size: 1.25rem;
+    text-align: center;
+    color:black;
+    padding: .6rem 1rem;
+    margin-right:3rem;
+    text-decoration: none;
+    border-top: 5px white solid;
+  }
+}
+
+@media screen and (max-width:62.5rem){
+  .nav-right{
+    display:none;
+  }
+}
+
+/* Carosel */
+.gridimagesmall{
+  height:auto;
+  max-width: 20rem;
+}
+
+.gridimage{
+  height:auto;
+  width: 100%;
+}
+
+
+
+
+.grid{
+  display:grid;
+}
+
+.gridelement{
+  padding: 1rem;
+  max-width: 35rem;
+  min-width: 15rem;
+  border:1px solid black;
+  transition: 0.5s;
+}
+
+.gridelement:hover{
+  background-color: blue;
+  color:white;
+}
+
+.grid-item--width2{
+  width:60%;
+}
+
+
+.grid-item{
+  float: left;
+  padding: 1rem;
+  /* max-width: 20rem; */
+  border:1px solid black;
+  transition-duration: 0.5s;
+}
+
+/* img doesnt rescale */
+.extendgridimg{
+  width:100%;
+  height:auto;
+  /* display:block; */
+}
+
+.expandedGridelement{
+  /* width:40%; */
+  float:left;
+  /* max-width: 35rem; */
+  border: 1px solid black;
+  padding: 1rem;
+}
+
+.grid-item:hover, .grid-item:focus{
+  background-color: blue;
+  color:white;
+}
+
+.shop-item {
+  position: relative;
+}
+
+.shop-item h3 {
+	display:inline-block;
+	margin-bottom: 2rem;
+}
+
+.shop-item a {
+	display:block;
+	float: right;
+}
+
+@media screen and (min-width:71.875rem){
+  .irregular-column{
+    grid-template-columns: 2fr 1fr;
+    /* grid-gap: .2rem; */
+    max-width: 100rem;
+  }
+}
+
+@media (max-width:74.875rem){
+    .modalgrid{
+      grid-template-columns: 1fr;
+      grid-row-gap: 1rem;
+    }
+}
+
+@media screen and (max-width:28rem){
+  .irregular-column{
+    grid-template-columns:1fr;
+    max-width: 100rem;
+  }
+  .main-content{
+    /* font-size: 2rem; */
+    margin-left: auto;
+    margin-right:  auto;
+  }
+
+  .column{
+    width:100%;
+  }
+  .counter{
+    padding-left: 5rem;
+  }
+  .counterCart{
+    padding-left: 6.5rem;
+  }
+
+  .grid-item,.grid-sizer{
+    width:75%;
+    margin-bottom: .2rem;
+    /* margin-left: .2rem; */
+  }
+
+  .grid-item--width2{
+    width:75%;
+  }
+
+  .modalgrid{
+    grid-template-columns: 1fr;
+    grid-row-gap: 1rem;
+  }
+}
+
+.product {
+	position: relative;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.product-image {
+	display: block;
+	padding: 1rem;
+	max-width: 50rem;
+	max-height: 50rem;
+	width: 100%;
+}
+
+.product-info {
+	display: block;
+	padding: 3rem 2rem 0 2rem;
+}
+
+@media (min-width: 57.75rem){
+	.product-image {
+		display: inline-block;
+		padding: 1rem;
+		max-width: 50rem;
+		max-height: 50rem;
+		width: 60%;
+	}
+
+	.product-info {
+		padding: 3rem 2rem 0 2rem;
+		float: right;
+		width: 40%;
+	}
+}
+
+.product-info h3 {
+	float: right;
+	clear: right;
+	display: block;
+	margin: auto;
+}
+
+.product-info p {
+	float: left;
+	clear: left;
+	display: block;
+	margin-top: 5rem;
+	margin-bottom: 0.5rem;
+}
+
+.product-info a {
+	float: right;
+	clear: right;
+	display: block;
+	margin-top: 5rem;
+	margin-right: 1rem;
+}
+
+.price {
+	float: right;
+}
+
+.item-link {
+  float: right;
+  clear: right;
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+}
+
+ul {
+	list-style-type: none;
+}
+
+@media (min-width: 67.75rem){
+	.sidenav {
+		padding-top: 7rem;
+	}
+}
+
+.about-frame {
+  display:block;
+  padding: 2rem;
+  border:1px solid black;
+}
+
+.about-frame p {
+  max-width: 80rem;
+}

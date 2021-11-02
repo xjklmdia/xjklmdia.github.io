@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gallery</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <link href="css/normalize.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+<link href="css/font.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  </head>
+<body>
+<div class= "navbar-container">
+  <div class="navbar" id="topnav">
+  <nav>
+    <a href="index.html" class = "active">Logo</a>
+    <a href = "about.html">About Us</a>
+      <a href = "tickets.html">Tickets</a>
+      <a href="articles-home.html"> News </a>
+      <a href="shop.html">Shop</a>
+      <div class = "nav-right">
+        <a href = "#">Contact Us</a>
+        </div>
+        <a href="javascript:void(0);" class="icon" onclick="menuRespFunction()" aria-label="menu for phones">
+        <i class = "fa fa-bars"></i>
+        </a>
+  </nav>
+  </div>
+  </div>
+<div class = "carosel">
+  <!-- <p>Carosel</p> -->
+    <div class="slide-showcontainer">
+      <div class="mySlides fade">
+        <img class="slideimg" src="img/jock-1.jpg" alt="jock macdonald portrait">
+      </div>
+
+      <div class="mySlides fade">
+        <img class="slideimg" src="img/process-2.jpg" alt="super cool composite image">
+      </div>
+
+      <div class="mySlides fade">
+        <img class="slideimg" src="img/njp1.jpg" alt="Nam June Paik Retrospective">
+      </div>
+      </div>
+
+  </div>
+
+  <div>
+<!-- NOT RESPONSIVE YET -->
+    <section>
+    <h1>HOURS</h1>
+    <div class="grid-op ">
+    <div class="opgrid op-hours">
+    <table>
+        <tr>
+          <td class="dow">Monday</td>
+          <td>1400-1800</td>
+        </tr>
+        <tr>
+          <td class="dow">Tuesday</td>
+          <td>1400-1800</td>
+        </tr>
+        <tr>
+          <td class="dow">Wednesday</td>
+          <td>1400-1800</td>
+        </tr>
+        <tr>
+          <td class="dow">Thursday</td>
+          <td>1400-1800</td>
+        </tr>
+        <tr>
+          <td class="dow">Friday</td>
+          <td>1400-1800</td>
+        </tr>
+        <tr>
+          <td class="dow">Saturday</td>
+          <td>1400-1800</td>
+        </tr>
+        <tr>
+          <td class="dow">Sunday</td>
+          <td>Closed</td>
+        </tr>
+      </table>
+      </div>
+      <div class="opgrid op-ui">
+      <a href="tickets.html">  <button class="operationuibuttons"> Purchase Tickets </button> </a>
+      <a href = "about.html">  <button class="operationuibuttons"> Contact Us </button> </a>
+      </div>
+      </div>
+    </section>
+    </div>
+      <section>
+<h1> RECENT NEWS </h1>
+        <div class="modalgrid">
+          <div class = "gridelement">
+            <a href="#">
+            <h3 class ="titleclass"> New Twitter </h3>
+            <img class="gridimage" src="img/twitter.png" alt="image of 3D printed twitter cube"> <!-- img from https://economictimes.indiatimes.com/industry/services/advertising/brands-may-pull-back-from-advertising-on-twitter-amid-companys-face-off-with-government/articleshow/80863377.cms -->
+            <h4 class="subtitleblock dateblock">Feburary 05 2021</h4>
+            <!-- <h4 class="subtitleblock">News Article </h4> -->
+            <p class = "modal-paragraph">Our recent innovation award came through and allowed us a grant on finally researching twitter and its effect on art consumption. Come See Us! </p>
+            <!-- <a href="#"> READ MORE </a> -->
+          </a>
+          </div>
+
+          <div class = "gridelement">
+            <h3 class ="titleclass">Gallery Hauntings: A spooktacular</h3>
+            <img class="gridimage" src="img/spooky.png" alt="image of a gallery hallway with a spooky installation in the corner"> <!-- img from https://popcornhorror.com/creepy-haunted-art-gallery/  -->
+            <h4 class="subtitleblock dateblock">October 01 2021</h4>
+            <!-- <h4 class="subtitleblock">News Article </h4> -->
+            <p class = "modal-paragraph">Spooky sightings in the hallways? Or a clowder of cats cross your path? Come check out the Gallery haunt list. Becareful though! You might find a SPOOKY friend coming home with you! </p>
+            <!-- <a href="#"> READ MORE </a> -->
+          </div>
+
+          <div class = "gridelement">
+            <h3 class ="titleclass"> Richardsons Grant Information </h3>
+            <img class="gridimage" src="img/grant.png" alt="Image of a lady painting a mural"> <!-- img from https://arts.mit.edu/camit/funding/apply/  -->
+            <h4 class="subtitleblock dateblock">August 19 2021</h4>
+            <!-- <h4 class="subtitleblock">News Article </h4> -->
+            <p class = "modal-paragraph">Have you always wanted to be the next visionary? See yourself as the next Picasso? Apply now for the Richardson grant and win yourself $15000 in an art research grant from the Gallery!</p>
+            <!-- <a href="#"> READ MORE </a> -->
+          </div>
+          </div>
+      </section>
+      <section class="modal-learnmore">
+      <div class="learnmore">
+        <button class="operationuibuttons">Learn More</button>
+      </div>
+    </section>
+
+
+        <script src="js/slideshow.js"></script>
+        <script src="js/menu.js"></script>
+</body>
+</html>
