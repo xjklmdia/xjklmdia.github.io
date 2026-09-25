@@ -195,6 +195,25 @@
       pointer-events: none;
     }
 
+    /* SVG Layer for connection cloud beneath the dots */
+    .cloud-svg-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .highlight-cloud {
+      fill: rgba(59, 130, 246, 0.18);
+      stroke: rgba(59, 130, 246, 0.45);
+      stroke-width: 2px;
+      filter: blur(4px);
+      transition: opacity 0.2s ease;
+    }
+
     /* Container holding all color explosion dots */
     .nodes-layer {
       position: absolute;
@@ -203,6 +222,7 @@
       width: 100%;
       height: 100%;
       pointer-events: none;
+      z-index: 5;
     }
 
     /* Individual Color Dot Style */
@@ -217,7 +237,7 @@
       pointer-events: auto;
       box-shadow: 0 1px 4px rgba(0,0,0,0.2);
       border: 1.5px solid rgba(255,255,255,0.8);
-      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s;
+      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s, opacity 0.2s;
     }
 
     .plot-node:hover {
@@ -226,8 +246,9 @@
       box-shadow: 0 0 10px rgba(0,0,0,0.4);
     }
 
-    /* Active Selection Ring State */
-    .plot-node.active {
+    /* Active or Highlighted Selection Ring State */
+    .plot-node.active,
+    .plot-node.highlighted {
       transform: scale(1.6);
       z-index: 20;
       box-shadow: 0 0 12px rgba(0,0,0,0.5);
@@ -317,6 +338,11 @@
       break-inside: avoid;
       border-radius: 4px;
       overflow: hidden;
+      transition: opacity 0.2s ease;
+    }
+
+    .gallery-item-wrapper.hidden {
+      display: none !important;
     }
 
     .demo-image {
@@ -324,11 +350,6 @@
       height: auto;
       display: block;
       border-radius: 4px;
-      transition: opacity 0.3s ease, transform 0.2s ease;
-    }
-
-    .gallery-item-wrapper.hidden {
-      display: none !important;
     }
 
     /* Percentage Color Swatches Bar Overlay on Image Hover */
@@ -418,6 +439,10 @@
                 <button class="control-btn" id="view-all-btn">View All Pictures</button>
               </div>
               <div class="stereoscope" id="stereoscope">
+                <!-- SVG Cloud Layer beneath the nodes -->
+                <svg class="cloud-svg-layer" id="cloud-svg-layer">
+                  <path class="highlight-cloud" id="highlight-cloud-path" d="" />
+                </svg>
                 <div class="nodes-layer" id="nodes-layer"></div>
               </div>
               <span class="zoom-hint">Scroll to zoom • Drag to pan</span>
@@ -441,8 +466,7 @@
       </aside>
 
       <!-- Right Scrollable Gallery Section -->
-      <div class="gallery-container">
-        <div class="masonry-gallery" id="masonry-gallery">
+             <div class="masonry-gallery" id="masonry-gallery">
           <!-- Group 1 -->
 <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (38).jpg"></div>
 <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (45).jpg"></div>
@@ -528,7 +552,7 @@
     </div>
   </div>
 
-  <script>
+<script>
     function openTab(evt, cityName) {
       var i, tabcontent, tablinks;
       tabcontent = document.getElementsByClassName("tabcontent");
@@ -546,6 +570,8 @@
     document.addEventListener("DOMContentLoaded", () => {
       const stereoscopeEl = document.getElementById('stereoscope');
       const nodesLayer = document.getElementById('nodes-layer');
+      const cloudSvgLayer = document.getElementById('cloud-svg-layer');
+      const cloudPathEl = document.getElementById('highlight-cloud-path');
       const photoImages = document.querySelectorAll('.demo-image');
       const viewAllBtn = document.getElementById('view-all-btn');
 
@@ -564,6 +590,48 @@
       let startX = 0;
       let startY = 0;
       const plottedColorNodes = [];
+
+      // --- Lightbox Element Injection ---
+      const lightbox = document.createElement('div');
+      lightbox.id = 'image-lightbox';
+      lightbox.style.cssText = `
+        position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85);
+        display: flex; align-items: center; justify-content: center;
+        z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+        backdrop-filter: blur(4px);
+      `;
+      lightbox.innerHTML = `
+        <div style="position: relative; max-width: 90vw; max-height: 90vh;">
+          <img id="lightbox-img" src="" style="display: block; max-width: 90vw; max-height: 85vh; border-radius: 8px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5); object-fit: contain; transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
+          <button id="lightbox-close" style="position: absolute; top: -40px; right: 0; background: none; border: none; color: white; font-size: 28px; cursor: pointer; padding: 4px 8px;">&times;</button>
+        </div>
+      `;
+      document.body.appendChild(lightbox);
+
+      const lightboxImg = document.getElementById('lightbox-img');
+      const lightboxClose = document.getElementById('lightbox-close');
+
+      function openLightbox(imgSrc) {
+        lightboxImg.src = imgSrc;
+        lightbox.style.opacity = '1';
+        lightbox.style.pointerEvents = 'auto';
+        setTimeout(() => { lightboxImg.style.transform = 'scale(1)'; }, 10);
+      }
+
+      function closeLightbox() {
+        lightboxImg.style.transform = 'scale(0.95)';
+        lightbox.style.opacity = '0';
+        lightbox.style.pointerEvents = 'none';
+      }
+
+      lightbox.addEventListener('click', (e) => {
+        if (e.target !== lightboxImg) closeLightbox();
+      });
+      lightboxClose.addEventListener('click', closeLightbox);
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeLightbox();
+      });
+      // --- End Lightbox Setup ---
 
       // Mouse & Touch Dragging (Panning) Handlers
       stereoscopeEl.addEventListener('mousedown', (e) => {
@@ -606,6 +674,8 @@
       function updateTransform() {
         nodesLayer.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomScale})`;
         nodesLayer.style.transformOrigin = 'center center';
+        cloudSvgLayer.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomScale})`;
+        cloudSvgLayer.style.transformOrigin = 'center center';
       }
 
       // Scroll-to-Zoom Handler
@@ -614,12 +684,12 @@
         
         const zoomStep = 0.15;
         if (e.deltaY < 0) {
-          zoomScale = Math.min(zoomScale + zoomStep, 3.5); // Max zoom in
+          zoomScale = Math.min(zoomScale + zoomStep, 3.5); 
         } else {
-          zoomScale = Math.max(zoomScale - zoomStep, 1.0); // Min zoom out
+          zoomScale = Math.max(zoomScale - zoomStep, 1.0); 
           if (zoomScale === 1.0) {
             panX = 0;
-            panY = 0; // Reset pan position when fully zoomed out
+            panY = 0; 
           }
         }
         
@@ -632,9 +702,10 @@
           activeNode.classList.remove('active');
           activeNode = null;
         }
+        document.querySelectorAll('.plot-node').forEach(n => n.classList.remove('highlighted'));
+        cloudPathEl.setAttribute('d', '');
         photoImages.forEach(img => img.closest('.gallery-item-wrapper').classList.remove('hidden'));
         
-        // Reset metadata panel
         infoHueEl.innerHTML = `--&deg;`;
         infoSatEl.innerHTML = `--%`;
         infoHexEl.textContent = `#------`;
@@ -669,10 +740,102 @@
         return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
       }
 
+      function updateCloudForNodes(nodesToConnect) {
+        if (!nodesToConnect || nodesToConnect.length === 0) {
+          cloudPathEl.setAttribute('d', '');
+          return;
+        }
+
+        const pts = nodesToConnect.map(n => ({
+          x: parseFloat(n.domElement.style.left),
+          y: parseFloat(n.domElement.style.top)
+        }));
+
+        if (pts.length === 1) {
+          const p = pts[0];
+          cloudPathEl.setAttribute('d', `M ${p.x - 18},${p.y} a 18,18 0 1,0 36,0 a 18,18 0 1,0 -36,0`);
+          return;
+        }
+
+        if (pts.length === 2) {
+          const p1 = pts[0], p2 = pts[1];
+          const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
+          const perp = angle + Math.PI / 2;
+          const r = 20;
+          const dx = Math.cos(perp) * r;
+          const dy = Math.sin(perp) * r;
+
+          const pathStr = `M ${p1.x + dx},${p1.y + dy} ` +
+                          `L ${p2.x + dx},${p2.y + dy} ` +
+                          `A ${r},${r} 0 0,0 ${p2.x - dx},${p2.y - dy} ` +
+                          `L ${p1.x - dx},${p1.y - dy} ` +
+                          `A ${r},${r} 0 0,0 ${p1.x + dx},${p1.y + dy} Z`;
+          cloudPathEl.setAttribute('d', pathStr);
+          return;
+        }
+
+        let hull = [];
+        let leftmost = 0;
+        for (let i = 1; i < pts.length; i++) {
+          if (pts[i].x < pts[leftmost].x) leftmost = i;
+        }
+        let curr = leftmost;
+        do {
+          hull.push(pts[curr]);
+          let next = (curr + 1) % pts.length;
+          for (let i = 0; i < pts.length; i++) {
+            const cross = (pts[next].x - pts[curr].x) * (pts[i].y - pts[curr].y) - (pts[next].y - pts[curr].y) * (pts[i].x - pts[curr].x);
+            if (cross < 0) next = i;
+          }
+          curr = next;
+        } while (curr !== leftmost && hull.length < pts.length);
+
+        const padding = 22;
+        const expandedPts = hull.map((p, idx, arr) => {
+          const prev = arr[(idx - 1 + arr.length) % arr.length];
+          const next = arr[(idx + 1) % arr.length];
+          const v1x = p.x - prev.x, v1y = p.y - prev.y;
+          const v2x = next.x - p.x, v2y = next.y - p.y;
+          const len1 = Math.hypot(v1x, v1y) || 1;
+          const len2 = Math.hypot(v2x, v2y) || 1;
+          const nx = (-v1y / len1 - v2y / len2) / 2;
+          const ny = (v1x / len1 + v2x / len2) / 2;
+          const nlen = Math.hypot(nx, ny) || 1;
+          return {
+            x: p.x + (nx / nlen) * padding,
+            y: p.y + (ny / nlen) * padding
+          };
+        });
+
+        let d = `M ${expandedPts[0].x},${expandedPts[0].y}`;
+        for (let i = 0; i < expandedPts.length; i++) {
+          const p0 = expandedPts[(i - 1 + expandedPts.length) % expandedPts.length];
+          const p1 = expandedPts[i];
+          const p2 = expandedPts[(i + 1) % expandedPts.length];
+          const p3 = expandedPts[(i + 2) % expandedPts.length];
+
+          const cp1x = p1.x + (p2.x - p0.x) / 5;
+          const cp1y = p1.y + (p2.y - p0.y) / 5;
+          const cp2x = p2.x - (p3.x - p1.x) / 5;
+          const cp2y = p2.y - (p3.y - p1.y) / 5;
+
+          d += ` C ${cp1x},${cp1y} ${cp2x},${cp2y} ${p2.x},${p2.y}`;
+        }
+        d += ' Z';
+        cloudPathEl.setAttribute('d', d);
+      }
+
       async function processImages() {
         for (let i = 0; i < photoImages.length; i++) {
           const img = photoImages[i];
           const wrapper = img.closest('.gallery-item-wrapper');
+
+          // Bind click to open image in Lightbox
+          img.style.cursor = 'zoom-in';
+          img.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openLightbox(img.src);
+          });
 
           await new Promise((resolve) => {
             const tempImg = new Image();
@@ -682,19 +845,18 @@
               try {
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
-                canvas.width = 50;
-                canvas.height = 50;
-                ctx.drawImage(tempImg, 0, 0, 50, 50);
-                const data = ctx.getImageData(0, 0, 50, 50).data;
+                canvas.width = 60;
+                canvas.height = 60;
+                ctx.drawImage(tempImg, 0, 0, 60, 60);
+                const data = ctx.getImageData(0, 0, 60, 60).data;
                 
-                // Color quantization bucket map to find top 4 prominent color clusters with percentages
                 const colorBuckets = {};
                 let totalPixels = 0;
 
                 for (let p = 0; p < data.length; p += 4) {
-                  const qr = Math.round(data[p] / 32) * 32;
-                  const qg = Math.round(data[p+1] / 32) * 32;
-                  const qb = Math.round(data[p+2] / 32) * 32;
+                  const qr = Math.round(data[p] / 24) * 24;
+                  const qg = Math.round(data[p+1] / 24) * 24;
+                  const qb = Math.round(data[p+2] / 24) * 24;
                   const key = `${qr},${qg},${qb}`;
 
                   if (!colorBuckets[key]) {
@@ -705,28 +867,29 @@
                 }
 
                 const sortedBuckets = Object.values(colorBuckets).sort((a, b) => b.count - a.count);
-                const top4 = sortedBuckets.slice(0, 4);
+                // Extract top 8 colors per image for a much richer color breakdown
+                const topColors = sortedBuckets.slice(0, 8);
 
-                let top4Sum = top4.reduce((acc, curr) => acc + curr.count, 0);
-                if (top4Sum === 0) top4Sum = 1;
+                let topSum = topColors.reduce((acc, curr) => acc + curr.count, 0);
+                if (topSum === 0) topSum = 1;
 
                 let allocatedPct = 0;
-                const top4WithPercentages = top4.map((b, idx, arr) => {
+                const topColorsWithPercentages = topColors.map((b, idx, arr) => {
                   let pct;
                   if (idx === arr.length - 1) {
                     pct = 100 - allocatedPct;
                   } else {
-                    pct = Math.round((b.count / top4Sum) * 100);
+                    pct = Math.round((b.count / topSum) * 100);
                     allocatedPct += pct;
                   }
                   return { r: b.r, g: b.g, b: b.b, pct };
                 });
 
-                // Build hover overlay swatches bar at bottom of image wrapper
                 const overlay = document.createElement('div');
                 overlay.className = 'image-swatches-overlay';
                 
-                top4WithPercentages.forEach(swatch => {
+                // Show top 4 in overlay bar to keep layout clean
+                topColorsWithPercentages.slice(0, 4).forEach(swatch => {
                   const seg = document.createElement('div');
                   seg.className = 'swatch-segment';
                   seg.style.width = `${swatch.pct}%`;
@@ -742,31 +905,65 @@
 
                 wrapper.appendChild(overlay);
 
-                // Register nodes for stereoscope from top 4 color clusters
-                top4WithPercentages.forEach((swatch, regIdx) => {
+                topColorsWithPercentages.forEach((swatch) => {
                   const [hue, sat, light] = rgbToHsl(swatch.r, swatch.g, swatch.b);
-                  const adjustedHue = (hue + (regIdx * 12)) % 360;
                   const adjustedSat = Math.max(0, Math.min(100, sat));
 
-                  plottedColorNodes.push({
-                    img,
-                    index: i * 4 + regIdx,
-                    hue: adjustedHue,
-                    sat: adjustedSat,
-                    light,
-                    color: { r: swatch.r, g: swatch.g, b: swatch.b }
+                  // Deduplicate globally with a slightly tighter threshold so distinct accent tones appear as separate vibrant dots
+                  let existingNode = plottedColorNodes.find(n => {
+                    const hueDiff = Math.abs(n.hue - hue);
+                    const shortestHue = Math.min(hueDiff, 360 - hueDiff);
+                    return shortestHue <= 8 && Math.abs(n.sat - adjustedSat) <= 10 && Math.abs(n.light - light) <= 12;
                   });
+
+                  if (existingNode) {
+                    if (!existingNode.images.includes(img)) {
+                      existingNode.images.push(img);
+                    }
+                  } else {
+                    const nodeData = {
+                      images: [img],
+                      index: plottedColorNodes.length,
+                      hue: hue,
+                      sat: adjustedSat,
+                      light,
+                      color: { r: swatch.r, g: swatch.g, b: swatch.b },
+                      domElement: null
+                    };
+                    plottedColorNodes.push(nodeData);
+                  }
+                });
+
+                // --- Picture Hover Interaction ---
+                wrapper.addEventListener('mouseenter', () => {
+                  if (!activeNode) {
+                    document.querySelectorAll('.plot-node').forEach(n => n.classList.remove('highlighted'));
+                    const imageNodes = plottedColorNodes.filter(n => n.images.includes(img));
+                    imageNodes.forEach(n => {
+                      if (n.domElement) n.domElement.classList.add('highlighted');
+                    });
+                    updateCloudForNodes(imageNodes);
+                  }
+                });
+
+                wrapper.addEventListener('mouseleave', () => {
+                  if (!activeNode) {
+                    document.querySelectorAll('.plot-node').forEach(n => n.classList.remove('highlighted'));
+                    cloudPathEl.setAttribute('d', '');
+                  }
                 });
 
               } catch (err) {
-                plottedColorNodes.push({
-                  img,
-                  index: i * 4,
+                const fallbackNode = {
+                  images: [img],
+                  index: plottedColorNodes.length,
                   hue: (i * 25) % 360,
                   sat: 60,
                   light: 50,
-                  color: { r: 128, g: 128, b: 128 }
-                });
+                  color: { r: 128, g: 128, b: 128 },
+                  domElement: null
+                };
+                plottedColorNodes.push(fallbackNode);
               }
               resolve();
             };
@@ -779,126 +976,177 @@
         renderSpreadStereoscope();
       }
 
-function renderSpreadStereoscope() {
+      function renderSpreadStereoscope() {
         nodesLayer.innerHTML = '';
 
-        const centerOffset = 300; // Center point for 600px width/height canvas
-        const maxBoundaryRadius = 270; // Outer perimeter boundary
+        const centerOffset = 300; 
+        const maxBoundaryRadius = 270; 
 
         plottedColorNodes.forEach((item) => {
           let posX, posY;
           
-          // Neutral Gray / low saturation lands at exact center origin (0,0 offset)
-          if (item.sat < 8 || (Math.abs(item.color.r - 204) < 30 && Math.abs(item.color.g - 204) < 30 && Math.abs(item.color.b - 204) < 30)) {
-            posX = centerOffset;
-            posY = centerOffset;
-          } else {
-            // Hue determines the angle around the circle (0° to 360°)
-            const angleRad = (item.hue / 360) * 2 * Math.PI;
+          if (item.sat < 8) {
+            const indexAngleOffset = (item.index * 37) % 360; 
+            const lightnessAngle = ((item.light + indexAngleOffset) / 100) * 2 * Math.PI;
+            const grayRadius = 40 + ((item.light / 100) * 160) + ((item.index * 13) % 35);
             
-          // Saturation determines the distance outward from the center
-          const normalizedSat = item.sat / 100;
-          const radiusSpread = Math.pow(normalizedSat, 0.8); // Adjusted curve for smooth radial distribution
-          let radius = 40 + (radiusSpread * (maxBoundaryRadius - 40));
-          radius = Math.min(maxBoundaryRadius - 10, Math.max(20, radius));
-
-          posX = centerOffset + radius * Math.cos(angleRad);
-          posY = centerOffset + radius * Math.sin(angleRad);
-        }
-
-        const node = document.createElement('div');
-        node.className = 'plot-node';
-        node.style.left = `${posX}px`;
-        node.style.top = `${posY}px`;
-
-        const hexStr = rgbToHex(item.color.r, item.color.g, item.color.b);
-        node.style.backgroundColor = hexStr;
-
-        const updateMetadataDisplay = () => {
-          infoHueEl.innerHTML = `${item.hue}&deg;`;
-          infoSatEl.innerHTML = `${item.sat}%`;
-          infoHexEl.textContent = hexStr;
-          infoSwatchEl.style.backgroundColor = hexStr;
-          selectedColorBadge.style.backgroundColor = hexStr;
-        };
-
-        const filterByColorRange = () => {
-          const hueThreshold = 30; 
-          const satThreshold = 35;
-
-          if (activeNode === node) {
-            node.classList.remove('active');
-            activeNode = null;
-            photoImages.forEach(img => img.closest('.gallery-item-wrapper').classList.remove('hidden'));
-            infoHueEl.innerHTML = `--&deg;`;
-            infoSatEl.innerHTML = `--%`;
-            infoHexEl.textContent = `#------`;
-            infoSwatchEl.style.backgroundColor = '#9ca3af';
-            selectedColorBadge.style.backgroundColor = '#808080';
+            posX = centerOffset + grayRadius * Math.cos(lightnessAngle);
+            posY = centerOffset + grayRadius * Math.sin(lightnessAngle);
           } else {
-            document.querySelectorAll('.plot-node').forEach(n => n.classList.remove('active'));
-            node.classList.add('active');
-            activeNode = node;
+            const angleRad = (item.hue / 360) * 2 * Math.PI;
+            const normalizedSat = item.sat / 100;
+            const aggressiveSpread = Math.pow(normalizedSat, 0.3);
+            let radius = 20 + (aggressiveSpread * (maxBoundaryRadius - 20));
+            radius = Math.min(maxBoundaryRadius - 10, Math.max(12, radius));
 
+            posX = centerOffset + radius * Math.cos(angleRad);
+            posY = centerOffset + radius * Math.sin(angleRad);
+          }
+
+          const node = document.createElement('div');
+          node.className = 'plot-node';
+          node.style.left = `${posX}px`;
+          node.style.top = `${posY}px`;
+
+          // Visual Impressiveness: Make multi-image nodes pop nicely with scale and dynamic glowing shadows
+          const imageCount = item.images.length;
+          if (imageCount > 1) {
+            const scaleBonus = Math.min(1 + (imageCount * 0.12), 1.9);
+            node.style.width = `${13 * scaleBonus}px`;
+            node.style.height = `${13 * scaleBonus}px`;
+            node.style.boxShadow = `0 0 ${5 + imageCount * 2}px rgba(255, 255, 255, 0.7), 0 2px 6px rgba(0,0,0,0.45)`;
+          }
+
+          item.domElement = node;
+
+          const hexStr = rgbToHex(item.color.r, item.color.g, item.color.b);
+          node.style.backgroundColor = hexStr;
+
+          const brightness = (item.color.r * 299 + item.color.g * 587 + item.color.b * 114) / 1000;
+          if (brightness < 40) {
+            node.style.borderColor = 'rgba(255, 255, 255, 0.9)';
+          }
+
+          const updateMetadataDisplay = () => {
+            infoHueEl.innerHTML = `${item.hue}&deg;`;
+            infoSatEl.innerHTML = `${item.sat}%`;
+            infoHexEl.textContent = hexStr;
+            infoSwatchEl.style.backgroundColor = hexStr;
+            selectedColorBadge.style.backgroundColor = hexStr;
+          };
+
+          const filterByColorRange = () => {
+            const hueThreshold = 12; 
+            const satThreshold = 18;
+
+            if (activeNode === node) {
+              node.classList.remove('active');
+              activeNode = null;
+              document.querySelectorAll('.plot-node').forEach(n => n.classList.remove('highlighted'));
+              cloudPathEl.setAttribute('d', '');
+              photoImages.forEach(img => img.closest('.gallery-item-wrapper').classList.remove('hidden'));
+              infoHueEl.innerHTML = `--&deg;`;
+              infoSatEl.innerHTML = `--%`;
+              infoHexEl.textContent = `#------`;
+              infoSwatchEl.style.backgroundColor = '#9ca3af';
+              selectedColorBadge.style.backgroundColor = '#808080';
+            } else {
+              document.querySelectorAll('.plot-node').forEach(n => {
+                n.classList.remove('active');
+                n.classList.remove('highlighted');
+              });
+              node.classList.add('active');
+              activeNode = node;
+
+              updateMetadataDisplay();
+
+              const matchingNodes = [];
+              photoImages.forEach(img => {
+                const wrapper = img.closest('.gallery-item-wrapper');
+                const matchesForImage = plottedColorNodes.filter(p => p.images.includes(img));
+                const hasMatch = matchesForImage.some(match => {
+                  const hueDiff = Math.abs(match.hue - item.hue);
+                  const shortestHueDiff = Math.min(hueDiff, 360 - hueDiff); 
+                  const satDiff = Math.abs(match.sat - item.sat);
+                  return shortestHueDiff <= hueThreshold && satDiff <= satThreshold;
+                });
+
+                if (hasMatch) {
+                  wrapper.classList.remove('hidden');
+                  matchesForImage.forEach(m => {
+                    if (m.domElement) {
+                      m.domElement.classList.add('highlighted');
+                      if (!matchingNodes.includes(m)) matchingNodes.push(m);
+                    }
+                  });
+                } else {
+                  wrapper.classList.add('hidden');
+                }
+              });
+              updateCloudForNodes(matchingNodes);
+            }
+          };
+
+          node.addEventListener('click', (e) => {
+            e.stopPropagation();
+            filterByColorRange();
+          });
+
+          // --- Stereogram Dot Hover ---
+          node.addEventListener('mouseenter', () => {
             updateMetadataDisplay();
+            if (!activeNode) {
+              const hueThreshold = 12; 
+              const satThreshold = 18;
 
-            photoImages.forEach(img => {
-              const wrapper = img.closest('.gallery-item-wrapper');
-              const matchesForImage = plottedColorNodes.filter(p => p.img === img);
-              const hasMatch = matchesForImage.some(match => {
-                const hueDiff = Math.abs(match.hue - item.hue);
-                const shortestHueDiff = Math.min(hueDiff, 360 - hueDiff); 
-                const satDiff = Math.abs(match.sat - item.sat);
-                return shortestHueDiff <= hueThreshold && satDiff <= satThreshold;
+              document.querySelectorAll('.plot-node').forEach(n => n.classList.remove('highlighted'));
+              const matchingNodes = [];
+
+              photoImages.forEach(img => {
+                const wrapper = img.closest('.gallery-item-wrapper');
+                const matchesForImage = plottedColorNodes.filter(p => p.images.includes(img));
+                const hasMatch = matchesForImage.some(match => {
+                  const hueDiff = Math.abs(match.hue - item.hue);
+                  const shortestHueDiff = Math.min(hueDiff, 360 - hueDiff); 
+                  const satDiff = Math.abs(match.sat - item.sat);
+                  return shortestHueDiff <= hueThreshold && satDiff <= satThreshold;
+                });
+
+                if (hasMatch) {
+                  wrapper.classList.remove('hidden');
+                  matchesForImage.forEach(m => {
+                    if (m.domElement) {
+                      m.domElement.classList.add('highlighted');
+                      if (!matchingNodes.includes(m)) matchingNodes.push(m);
+                    }
+                  });
+                } else {
+                  wrapper.classList.add('hidden');
+                }
               });
 
-              if (hasMatch) {
-                wrapper.classList.remove('hidden');
-              } else {
-                wrapper.classList.add('hidden');
-              }
-            });
-          }
-        };
+              updateCloudForNodes(matchingNodes);
+            }
+          });
 
-        node.addEventListener('click', (e) => {
-          e.stopPropagation();
-          filterByColorRange();
+          node.addEventListener('mouseleave', () => {
+            if (!activeNode) {
+              document.querySelectorAll('.plot-node').forEach(n => n.classList.remove('highlighted'));
+              cloudPathEl.setAttribute('d', '');
+              photoImages.forEach(img => img.closest('.gallery-item-wrapper').classList.remove('hidden'));
+            }
+          });
+
+          nodesLayer.appendChild(node);
         });
-
-        node.addEventListener('mouseenter', () => {
-          updateMetadataDisplay();
-          if (!activeNode) {
-            const hueThreshold = 30;
-            const satThreshold = 35;
-
-            photoImages.forEach(img => {
-              const wrapper = img.closest('.gallery-item-wrapper');
-              const matchesForImage = plottedColorNodes.filter(p => p.img === img);
-              const hasMatch = matchesForImage.some(match => {
-                const hueDiff = Math.abs(match.hue - item.hue);
-                const shortestHueDiff = Math.min(hueDiff, 360 - hueDiff);
-                const satDiff = Math.abs(match.sat - item.sat);
-                return shortestHueDiff <= hueThreshold && satDiff <= satThreshold;
-              });
-
-              if (hasMatch) {
-                wrapper.classList.remove('hidden');
-              } else {
-                wrapper.classList.add('hidden');
-              }
-            });
-          }
-        });
-
-        nodesLayer.appendChild(node);
-      });
-    }
+      }
 
       document.addEventListener('click', (e) => {
         if (!e.target.closest('.stereoscope-sidebar') && activeNode) {
           activeNode.classList.remove('active');
           activeNode = null;
+          document.querySelectorAll('.plot-node').forEach(n => n.classList.remove('highlighted'));
+          cloudPathEl.setAttribute('d', '');
           photoImages.forEach(img => img.closest('.gallery-item-wrapper').classList.remove('hidden'));
           infoHueEl.innerHTML = `--&deg;`;
           infoSatEl.innerHTML = `--%`;
