@@ -27,6 +27,19 @@
       padding: 2rem;
     }
 
+.project-title {
+    font-family:  helveticaNeueReg;
+    font-size: 4.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.p-intro{
+    max-width: 45rem;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1rem;
+}
+
     .hero-layout {
       max-width: 1200px;
       margin: 0 auto;
@@ -66,7 +79,7 @@
         top: 2rem;
         width: 660px; /* Widened sidebar to comfortably house the 600px stereoscope */
         flex-shrink: 0;
-        border: 1px solid #e1e4e8;
+        border: 1px solid #000000;
         border-radius: 8px;
         padding: 1.25rem;
         box-shadow: 0 4px 12px rgba(0,0,0,0.03);
@@ -161,7 +174,7 @@
       height: 600px;
       border-radius: 50%;
       background: #ffffff;
-      border: 2px solid #e1e4e8;
+      border: 2px solid #000000;
       box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.04);
       display: flex;
       justify-content: center;
@@ -180,7 +193,7 @@
       position: absolute;
       width: 400px;
       height: 400px;
-      border: 1px dashed #edf0f2;
+      border: 1px dashed #000000;
       border-radius: 50%;
       pointer-events: none;
     }
@@ -190,7 +203,7 @@
       position: absolute;
       width: 200px;
       height: 200px;
-      border: 1px dashed #edf0f2;
+      border: 1px dashed #000000;
       border-radius: 50%;
       pointer-events: none;
     }
@@ -400,26 +413,38 @@
 <body>
 
   <nav class="header-nav">
-    <a href="aboutp.html" class="nav-item">About</a>
   </nav>
 
   <!-- Main Header Blurb -->
-  <div class="main-header-container">
-    <div class="hero-layout">
-      <div class="hero-text">
-        <h1 class="project-title" style="margin-top:0;">Photography</h1>
-        <p class="detail-intro" style="margin-bottom:0;">A small collection of photographs from various assignments. I spend the majority of my projects documenting form. When I am not doing photography you can find me tinkering on projects in other places. I'm currently interested in long exposure, nature, artistic figure photography and data bending.</p>
-        
-        <div class="sub-content-group" style="margin-top: 0.75rem;">
-          <ul class="sub-content-item" style="margin-bottom:0;">
-            <li><em>Roles:</em> Visual Design, Art Direction</li>
-            <li><em>Tools:</em> Camera, Adobe Lightroom, Adobe Photoshop</li>
-            <li><em>Year:</em> On-going</li>
-          </ul>
-        </div>
-      </div>
+<section class="p-intro">
+    <h1 class="project-title">Photography</h1>
+  <div class="p-wrapper">
+    <div class="p-hero">
+      <h4>INFO</h4>
+      <p class="detail-intro">
+        Photography that deals with fine art, nature, documentary and structural subjects. My true passion lies in nature documentation and data bending. Series are all ongoing unless otherwise mentioned.
+      </p>
+  
+    </div>
+    <div class="p-hero">
+      <h4>CONTEXT</h4>
+      <p class="detail-intro">
+     A collection of assorted work that lives in the fine art and documentary space
+      </p>
     </div>
   </div>
+  <h4>PROJECT STATS:</h4>
+      <div class="sub-content-group">
+        <ul class="sub-content-item">
+          <li><em>Year:</em> Ongoing</li>
+          <li><em>Context: </em>Personal ,  Client </li>
+          <li><em>Tools:</em>  Adobe Photoshop, Adobe Lightroom, Blender</li>
+          
+        </ul>
+        <ul class="sub-content-item">
+        </ul>
+      </div>
+    </section>
 
   <!-- Tab Content Area containing Left Sticky Stereoscope & Right Gallery -->
   <div id="All" class="tabcontent">
@@ -429,15 +454,14 @@
       <aside class="stereoscope-sidebar">
         <div class="hero-stereoscope-container">
           <div class="stereoscope-top-bar">
-            <div class="selected-color-preview" id="selected-color-badge" style="background-color: #808080;"></div>
-            <span class="info-label">Info</span>
+            <div class="stereoscope-controls">
+                <button class="control-btn" id="view-all-btn">View All Pictures</button>
+              </div>
           </div>
 
           <div class="stereoscope-main-row">
             <div class="hero-stereoscope-wrapper">
-              <div class="stereoscope-controls">
-                <button class="control-btn" id="view-all-btn">View All Pictures</button>
-              </div>
+
               <div class="stereoscope" id="stereoscope">
                 <!-- SVG Cloud Layer beneath the nodes -->
                 <svg class="cloud-svg-layer" id="cloud-svg-layer">
@@ -445,6 +469,7 @@
                 </svg>
                 <div class="nodes-layer" id="nodes-layer"></div>
               </div>
+
               <span class="zoom-hint">Scroll to zoom • Drag to pan</span>
             </div>
 
@@ -457,6 +482,7 @@
                 <span class="metric-val" id="info-sat">--%</span>
               </div>
               <div class="info-match-row">
+                              <div class="selected-color-preview" id="selected-color-badge" style="background-color: #808080;"></div>
                 <div class="match-swatch" id="info-swatch"></div>
                 <span class="match-hex" id="info-hex">#------</span>
               </div>
@@ -465,8 +491,8 @@
         </div>
       </aside>
 
-      <!-- Right Scrollable Gallery Section -->
-             <div class="masonry-gallery" id="masonry-gallery">
+<div class="gallery-container">
+        <div class="masonry-gallery" id="masonry-gallery">
           <!-- Group 1 -->
 <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (38).jpg"></div>
 <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (45).jpg"></div>
@@ -491,7 +517,7 @@
 <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (29).jpg"></div>
 <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people.JPG"></div>
 <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (47).JPG"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (29).jpg"></div
+<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (29).jpg"></div>
 
           <!-- Group 2 -->
 <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (23).jpg"></div>
@@ -548,7 +574,6 @@
 <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (14).jpg"></div>
         </div>
       </div>
-
     </div>
   </div>
 
@@ -667,7 +692,7 @@
         updateTransform();
       });
 
-      window.addEventListener('touched', () => {
+      window.addEventListener('touchend', () => {
         isDragging = false;
       });
 
@@ -830,7 +855,6 @@
           const img = photoImages[i];
           const wrapper = img.closest('.gallery-item-wrapper');
 
-          // Bind click to open image in Lightbox
           img.style.cursor = 'zoom-in';
           img.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -854,11 +878,12 @@
                 let totalPixels = 0;
 
                 for (let p = 0; p < data.length; p += 4) {
-                  const qr = Math.round(data[p] / 24) * 24;
-                  const qg = Math.round(data[p+1] / 24) * 24;
-                  const qb = Math.round(data[p+2] / 24) * 24;
-                  const key = `${qr},${qg},${qb}`;
-
+                  const qr = Math.min(255, Math.round(data[p] / 24) * 24);
+                  const qg = Math.min(255, Math.round(data[p+1] / 24) * 24);
+                  const qb = Math.min(255, Math.round(data[p+2] / 24) * 24);
+                  
+                  const key = `#${qr.toString(16).padStart(2, '0')}${qg.toString(16).padStart(2, '0')}${qb.toString(16).padStart(2, '0')}`;
+                  
                   if (!colorBuckets[key]) {
                     colorBuckets[key] = { r: qr, g: qg, b: qb, count: 0 };
                   }
@@ -867,7 +892,6 @@
                 }
 
                 const sortedBuckets = Object.values(colorBuckets).sort((a, b) => b.count - a.count);
-                // Extract top 8 colors per image for a much richer color breakdown
                 const topColors = sortedBuckets.slice(0, 8);
 
                 let topSum = topColors.reduce((acc, curr) => acc + curr.count, 0);
@@ -888,7 +912,6 @@
                 const overlay = document.createElement('div');
                 overlay.className = 'image-swatches-overlay';
                 
-                // Show top 4 in overlay bar to keep layout clean
                 topColorsWithPercentages.slice(0, 4).forEach(swatch => {
                   const seg = document.createElement('div');
                   seg.className = 'swatch-segment';
@@ -909,7 +932,6 @@
                   const [hue, sat, light] = rgbToHsl(swatch.r, swatch.g, swatch.b);
                   const adjustedSat = Math.max(0, Math.min(100, sat));
 
-                  // Deduplicate globally with a slightly tighter threshold so distinct accent tones appear as separate vibrant dots
                   let existingNode = plottedColorNodes.find(n => {
                     const hueDiff = Math.abs(n.hue - hue);
                     const shortestHue = Math.min(hueDiff, 360 - hueDiff);
@@ -934,7 +956,6 @@
                   }
                 });
 
-                // --- Picture Hover Interaction ---
                 wrapper.addEventListener('mouseenter', () => {
                   if (!activeNode) {
                     document.querySelectorAll('.plot-node').forEach(n => n.classList.remove('highlighted'));
@@ -985,30 +1006,25 @@
         plottedColorNodes.forEach((item) => {
           let posX, posY;
           
-          if (item.sat < 8) {
-            const indexAngleOffset = (item.index * 37) % 360; 
-            const lightnessAngle = ((item.light + indexAngleOffset) / 100) * 2 * Math.PI;
-            const grayRadius = 40 + ((item.light / 100) * 160) + ((item.index * 13) % 35);
-            
-            posX = centerOffset + grayRadius * Math.cos(lightnessAngle);
-            posY = centerOffset + grayRadius * Math.sin(lightnessAngle);
-          } else {
-            const angleRad = (item.hue / 360) * 2 * Math.PI;
-            const normalizedSat = item.sat / 100;
-            const aggressiveSpread = Math.pow(normalizedSat, 0.3);
-            let radius = 20 + (aggressiveSpread * (maxBoundaryRadius - 20));
-            radius = Math.min(maxBoundaryRadius - 10, Math.max(12, radius));
+          // Determine angle: use Hue for chromatic colors, or an index-based angle for grays
+          const angleRad = (item.sat < 8)
+            ? (((item.index * 37) % 360) / 360) * 2 * Math.PI
+            : (item.hue / 360) * 2 * Math.PI;
 
-            posX = centerOffset + radius * Math.cos(angleRad);
-            posY = centerOffset + radius * Math.sin(angleRad);
-          }
+          // Determine radius using Lightness (0% = center/dark, 100% = edge/light)
+          const normalizedLight = item.light / 100;
+          const lightCurve = Math.pow(normalizedLight, 0.85);
+          let radius = 25 + (lightCurve * (maxBoundaryRadius - 25));
+          radius = Math.min(maxBoundaryRadius - 10, Math.max(15, radius));
+
+          posX = centerOffset + radius * Math.cos(angleRad);
+          posY = centerOffset + radius * Math.sin(angleRad);
 
           const node = document.createElement('div');
           node.className = 'plot-node';
           node.style.left = `${posX}px`;
           node.style.top = `${posY}px`;
 
-          // Visual Impressiveness: Make multi-image nodes pop nicely with scale and dynamic glowing shadows
           const imageCount = item.images.length;
           if (imageCount > 1) {
             const scaleBonus = Math.min(1 + (imageCount * 0.12), 1.9);
@@ -1092,7 +1108,6 @@
             filterByColorRange();
           });
 
-          // --- Stereogram Dot Hover ---
           node.addEventListener('mouseenter', () => {
             updateMetadataDisplay();
             if (!activeNode) {
@@ -1158,6 +1173,10 @@
 
       processImages();
     });
+
+    document.addEventListener('contextmenu', (e) => {
+  e.preventDefault();
+});
   </script>
 
   <script src="js/lazyload.js"></script>
