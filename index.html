@@ -8,7 +8,6 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-  
     gtag('config', 'G-T4EZDL5MHN');
   </script>
   <meta charset="utf-8">
@@ -17,9 +16,364 @@
   <script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.5.0/dist/lazyload.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
   <script src="js/intense.js"></script>
-  <link href="css/main.css" rel="stylesheet">
   <link href="css/lightbox.css" rel="stylesheet">
   <link rel="icon" href="img/favicon.ico">
+
+  <style>
+    /* Main Layout Header Container */
+    .main-header-container {
+      background-color: #ffffff;
+      border-bottom: 1px solid #e1e4e8;
+      padding: 2rem;
+    }
+
+    .hero-layout {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .hero-text {
+      width: 100%;
+    }
+
+    /* Tab Content Layout Container with Left Sidebar & Right Gallery */
+    .tabcontent-layout {
+      display: flex;
+      flex-direction: column;
+      max-width: 1650px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+      gap: 2rem;
+      position: relative;
+    }
+
+    /* Left Static Sidebar for the Stereoscope */
+    .stereoscope-sidebar {
+      width: 100%;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    @media (min-width: 1100px) {
+      .tabcontent-layout {
+        flex-direction: row;
+        align-items: flex-start;
+      }
+      .stereoscope-sidebar {
+        position: sticky;
+        top: 2rem;
+        width: 660px; /* Widened sidebar to comfortably house the 600px stereoscope */
+        flex-shrink: 0;
+        border: 1px solid #e1e4e8;
+        border-radius: 8px;
+        padding: 1.25rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      }
+    }
+
+    /* Stereoscope Layout Structure inside Sidebar */
+    .hero-stereoscope-container {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      background: #ffffff;
+    }
+
+    .stereoscope-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      padding: 0 0.2rem;
+      width: 100%;
+    }
+
+    .selected-color-preview {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .info-label {
+      font-family: sans-serif;
+      font-size: 0.75rem;
+      color: #8c939d;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+    }
+
+    .stereoscope-main-row {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      width: 100%;
+    }
+
+    .hero-stereoscope-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Action Controls Toolbar */
+    .stereoscope-controls {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      align-items: center;
+      width: 100%;
+      justify-content: flex-start;
+    }
+
+    .control-btn {
+      background-color: #f3f4f6;
+      border: 1px solid #d1d5db;
+      color: #374151;
+      font-size: 0.65rem;
+      font-weight: 600;
+      padding: 0.2rem 0.45rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+
+    .control-btn:hover {
+      background-color: #e5e7eb;
+      border-color: #9ca3af;
+    }
+
+    .zoom-hint {
+      font-size: 0.6rem;
+      color: #9ca3af;
+      margin-top: 4px;
+      text-align: center;
+    }
+
+    /* Large 600px Stereoscope Map & Panning Cursor */
+    .stereoscope {
+      position: relative;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 2px solid #e1e4e8;
+      box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.04);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden; 
+      cursor: grab;
+      user-select: none;
+    }
+
+    .stereoscope:active {
+      cursor: grabbing;
+    }
+
+    .stereoscope::before {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      border: 1px dashed #edf0f2;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .stereoscope::after {
+      content: '';
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      border: 1px dashed #edf0f2;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    /* Container holding all color explosion dots */
+    .nodes-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    /* Individual Color Dot Style */
+    .plot-node {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      margin-left: -7px;
+      margin-top: -7px;
+      border-radius: 50%;
+      cursor: pointer;
+      pointer-events: auto;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+      border: 1.5px solid rgba(255,255,255,0.8);
+      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s;
+    }
+
+    .plot-node:hover {
+      transform: scale(1.6);
+      z-index: 20;
+      box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    }
+
+    /* Active Selection Ring State */
+    .plot-node.active {
+      transform: scale(1.6);
+      z-index: 20;
+      box-shadow: 0 0 12px rgba(0,0,0,0.5);
+      outline: 2.5px solid #111827;
+      outline-offset: 1px;
+    }
+
+    /* Metadata Panel */
+    .stereoscope-info-panel {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      font-family: sans-serif;
+      gap: 1rem;
+      width: 100%;
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid #f3f4f6;
+    }
+
+    .info-metrics {
+      display: flex;
+      align-items: baseline;
+      font-size: 0.75rem;
+    }
+
+    .metric-key {
+      color: #6b7280;
+      font-weight: 600;
+      font-size: 0.65rem;
+      letter-spacing: 0.05em;
+      margin-right: 0.25rem;
+    }
+
+    .metric-val {
+      color: #111827;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    .info-match-row {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .match-swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.15);
+      background-color: #9ca3af;
+    }
+
+    .match-hex {
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: #374151;
+      font-weight: 600;
+    }
+
+    /* Gallery scrollable container on the right */
+    .gallery-container {
+      flex: 1;
+      min-width: 0;
+    }
+
+    /* Modern CSS Masonry Layout */
+    .masonry-gallery {
+      column-count: 1;
+      column-gap: 15px;
+      width: 100%;
+    }
+
+    @media (min-width: 600px) {
+      .masonry-gallery { column-count: 2; }
+    }
+    @media (min-width: 1200px) {
+      .masonry-gallery { column-count: 3; }
+    }
+
+    /* Wrapper for image item to anchor color swatches overlay on hover */
+    .gallery-item-wrapper {
+      position: relative;
+      margin-bottom: 15px;
+      break-inside: avoid;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .demo-image {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 4px;
+      transition: opacity 0.3s ease, transform 0.2s ease;
+    }
+
+    .gallery-item-wrapper.hidden {
+      display: none !important;
+    }
+
+    /* Percentage Color Swatches Bar Overlay on Image Hover */
+    .image-swatches-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 32px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      gap: 6px;
+      box-sizing: border-box;
+      opacity: 0;
+      transform: translateY(100%);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      pointer-events: none;
+      border-top: 1px solid rgba(0,0,0,0.08);
+      z-index: 10;
+    }
+
+    .gallery-item-wrapper:hover .image-swatches-overlay {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .swatch-segment {
+      height: 18px;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: monospace;
+      font-size: 0.6rem;
+      font-weight: 700;
+      border: 1px solid rgba(0,0,0,0.15);
+      box-sizing: border-box;
+      overflow: hidden;
+      white-space: nowrap;
+      padding: 0 2px;
+    }
+  </style>
 </head>
 
 <body>
@@ -28,127 +382,514 @@
     <a href="aboutp.html" class="nav-item">About</a>
   </nav>
 
-  <section class="main-content">
-    <h1 class="project-title">Photography</h1>
-    <p class=" detail-intro">A small collection of photographs from various assignments. I spend the majority of my projects documenting form. When I am not doing photography you can find me tinkering on projects in other places. I'm currently interested in long exposure, nature, artistic figure photography and data bending.
-    </p>
-
-    <div class="sub-content-group">
-      <ul class="sub-content-item">
-        <li><em>Roles:</em> Visual Design, Art Direction</li>
-        <li><em>Tools:</em> Camera, Adobe Lightroom, Adobe Photoshop</li>
-        <li><em>Year:</em> On-going</li>
-      </ul>
+  <!-- Main Header Blurb -->
+  <div class="main-header-container">
+    <div class="hero-layout">
+      <div class="hero-text">
+        <h1 class="project-title" style="margin-top:0;">Photography</h1>
+        <p class="detail-intro" style="margin-bottom:0;">A small collection of photographs from various assignments. I spend the majority of my projects documenting form. When I am not doing photography you can find me tinkering on projects in other places. I'm currently interested in long exposure, nature, artistic figure photography and data bending.</p>
+        
+        <div class="sub-content-group" style="margin-top: 0.75rem;">
+          <ul class="sub-content-item" style="margin-bottom:0;">
+            <li><em>Roles:</em> Visual Design, Art Direction</li>
+            <li><em>Tools:</em> Camera, Adobe Lightroom, Adobe Photoshop</li>
+            <li><em>Year:</em> On-going</li>
+          </ul>
+        </div>
+      </div>
     </div>
-  </section>
-  <section class="main-content">
-</section>
-<!-- <section class="main-content"> -->
-  <!-- TODO: MAKE LIGHTBOX WORK
-    2 options either full or 3 column
-               -->
+  </div>
+
+  <!-- Tab Content Area containing Left Sticky Stereoscope & Right Gallery -->
   <div id="All" class="tabcontent">
-  <div class="gallery-row">
-        <div class="gallery-column">
-        <img class="lazy demo-image" src="img/photography/img_people (41).jpg">
-        <img class="lazy demo-image" src="img/photography/photoreel (7).PNG">
-<img class="lazy demo-image" src="img/photography/img_people (42).jpg">
-          <img class="lazy demo-image" src="img/photography/img_people (27).jpg">
-            <img class="lazy demo-image" src="img/photography/img_people (35).jpg">
-          <img class="lazy demo-image" src="img/photography/img_people (25).jpg">
-          <img class="lazy demo-image" src="img/photography/img_people (39).jpg">
-          <img class="lazy demo-image" src="img/photography/img_people (16).jpg">
-          <img class="lazy demo-image" src="img/photography/img_people (30).jpg">
-          <img class="lazy demo-image" src="img/photography/img_people (6).jpg">
-            <img class="lazy demo-image" src="img/photography/img_people (40).jpg">
-          <img class="lazy demo-image" src="img/photography/img_people (18).jpg">
-          <img class="lazy demo-image" src="img/photography/img_people (3).jpg">
-          <img class="lazy demo-image" src="img/photography/img_people (13).jpg">
-          <img class="lazy demo-image" src="img/photography/img_people (20).jpg">
-            <img class="lazy demo-image" src="img/photography/img_people (7).jpg">
-            <!-- <img class="lazy demo-image" src="img/photography/img_people (2).jpg"> -->
-          <img class="lazy demo-image" src="img/photography/img_people (7).png">
-          <img class="lazy demo-image" src="img/photography/img_people (47).jpg">
-          
-          <!-- <img class="lazy demo-image" src="img/photography/img_people (29).jpg"> -->
-            <!-- <img class="lazy demo-image" src="img/photography/img_people (37).png"> -->
+    <div class="tabcontent-layout">
+      
+      <!-- Left Sticky Sidebar Container -->
+      <aside class="stereoscope-sidebar">
+        <div class="hero-stereoscope-container">
+          <div class="stereoscope-top-bar">
+            <div class="selected-color-preview" id="selected-color-badge" style="background-color: #808080;"></div>
+            <span class="info-label">Info</span>
+          </div>
 
+          <div class="stereoscope-main-row">
+            <div class="hero-stereoscope-wrapper">
+              <div class="stereoscope-controls">
+                <button class="control-btn" id="view-all-btn">View All Pictures</button>
+              </div>
+              <div class="stereoscope" id="stereoscope">
+                <div class="nodes-layer" id="nodes-layer"></div>
+              </div>
+              <span class="zoom-hint">Scroll to zoom • Drag to pan</span>
+            </div>
+
+            <!-- Metadata Readout Panel -->
+            <div class="stereoscope-info-panel" id="info-panel">
+              <div class="info-metrics">
+                <span class="metric-key">HUE</span>
+                <span class="metric-val" id="info-hue">--&deg;</span>
+                <span class="metric-key" style="margin-left: 0.5rem;">SAT</span>
+                <span class="metric-val" id="info-sat">--%</span>
+              </div>
+              <div class="info-match-row">
+                <div class="match-swatch" id="info-swatch"></div>
+                <span class="match-hex" id="info-hex">#------</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="gallery-column">
-          <img class="lazy demo-image" src="img/photography/img_people (8).png">
-            <img class="lazy demo-image" src="img/photography/img_people (1).png">
-            <img class="lazy demo-image" src="img/photography/img_people (17).jpg">
-                        <img class="lazy demo-image" src="img/photography/img_people (38).jpg">
-            <img class="lazy demo-image" src="img/photography/img_people (19).jpg">
-            <img class="lazy demo-image" src="img/photography/img_people (26).jpg">
-            <img class="lazy demo-image" src="img/photography/img_people (8).jpg">
-            <img class="lazy demo-image" src="img/photography/img_people (28).jpg">
-<img class="lazy demo-image" src="img/photography/img_people (43).jpg">
-            <img class="lazy demo-image" src="img/photography/img_people (22).jpg">
-            <img class="lazy demo-image" src="img/photography/img_people (23).jpg">
-            <img class="lazy demo-image" src="img/photography/img_people (49).jpg">
-            <img class="lazy demo-image" src="img/photography/img_people (21).jpg">
-            <img class="lazy demo-image" src="img/photography/img_people (12).jpg">
-            <!-- <img class="lazy demo-image" src="img/photography/img_people (37).jpg"> -->
-          <img class="lazy demo-image" src="img/photography/img_people (29).jpg">
-          <img class="lazy demo-image" src="img/photography/img_people (11).jpg">
-          <img class="lazy demo-image" src="img/photography/photoreel (4).PNG">
-          <img class="lazy demo-image" src="img/photography/img_people (15).jpg">
+      </aside>
 
+      <!-- Right Scrollable Gallery Section -->
+      <div class="gallery-container">
+        <div class="masonry-gallery" id="masonry-gallery">
+          <!-- Group 1 -->
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (41).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/photoreel (7).PNG"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (42).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (27).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (35).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (25).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (39).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (16).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (30).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (6).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (40).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (18).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (3).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (13).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (20).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (7).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (7).png"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (47).jpg"></div>
 
+          <!-- Group 2 -->
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (8).png"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (1).png"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (17).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (38).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (19).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (26).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (8).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (28).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (43).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (22).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (23).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (49).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (21).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (12).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (29).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (11).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/photoreel (4).PNG"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (15).jpg"></div>
 
+          <!-- Group 3 -->
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (9).png"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (20).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (2).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (34).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (12).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (33).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (29).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (24).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (4).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (14).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (48).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (50).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (5).png"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/photoreel (6).PNG"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (37).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (32).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (44).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (45).jpg"></div>
         </div>
-        <div class="gallery-column">
-          <img class="lazy demo-image" src="img/photography/img_people (9).png">
-            <img class="lazy demo-image" src="img/photography/img_people (20).jpg">
-            <!-- <img class="lazy demo-image" src="img/photography/img_people (7).jpg"> -->
-            <img class="lazy demo-image" src="img/photography/img_people (2).jpg">
-            <img class="lazy demo-image" src="img/photography/img_people (34).jpg">
-            <img class="lazy demo-image" src="img/photography/img_people (12).jpg">
-            <img class="lazy demo-image" src="img/photography/img_people (33).jpg">
-            <img class="lazy demo-image" src="img/photography/img_people (29).jpg">
-            <img class="lazy demo-image" src="img/photography/img_people (24).jpg">
-            <img class="lazy demo-image" src="img/photography/img_people (4).jpg">
-            <img class="lazy demo-image" src="img/photography/img_people (14).jpg">
-            <img class="lazy demo-image" src="img/photography/img_people (48).jpg">
-            <img class="lazy demo-image" src="img/photography/img_people (50).jpg">
-            <img class="lazy demo-image" src="img/photography/img_people (5).png">
-            <img class="lazy demo-image" src="img/photography/photoreel (6).PNG">
-            <img class="lazy demo-image" src="img/photography/img_people (37).jpg">
-            <img class="lazy demo-image" src="img/photography/img_people (32).jpg">
-<img class="lazy demo-image" src="img/photography/img_people (44).jpg">
-<img class="lazy demo-image" src="img/photography/img_people (45).jpg">
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function openTab(evt, cityName) {
+      var i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablinks");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+      document.getElementById(cityName).style.display = "block";
+      evt.currentTarget.className += " active";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const stereoscopeEl = document.getElementById('stereoscope');
+      const nodesLayer = document.getElementById('nodes-layer');
+      const photoImages = document.querySelectorAll('.demo-image');
+      const viewAllBtn = document.getElementById('view-all-btn');
+
+      // Metadata UI elements
+      const infoHueEl = document.getElementById('info-hue');
+      const infoSatEl = document.getElementById('info-sat');
+      const infoHexEl = document.getElementById('info-hex');
+      const infoSwatchEl = document.getElementById('info-swatch');
+      const selectedColorBadge = document.getElementById('selected-color-badge');
+
+      let activeNode = null;
+      let zoomScale = 1.0; 
+      let panX = 0;
+      let panY = 0;
+      let isDragging = false;
+      let startX = 0;
+      let startY = 0;
+      const plottedColorNodes = [];
+
+      // Mouse & Touch Dragging (Panning) Handlers
+      stereoscopeEl.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.clientX - panX;
+        startY = e.clientY - panY;
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        panX = e.clientX - startX;
+        panY = e.clientY - startY;
+        updateTransform();
+      });
+
+      window.addEventListener('mouseup', () => {
+        isDragging = false;
+      });
+
+      // Touch Panning Support for Mobile
+      stereoscopeEl.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+          isDragging = true;
+          startX = e.touches[0].clientX - panX;
+          startY = e.touches[0].clientY - panY;
+        }
+      });
+
+      window.addEventListener('touchmove', (e) => {
+        if (!isDragging || e.touches.length !== 1) return;
+        panX = e.touches[0].clientX - startX;
+        panY = e.touches[0].clientY - startY;
+        updateTransform();
+      });
+
+      window.addEventListener('touched', () => {
+        isDragging = false;
+      });
+
+      function updateTransform() {
+        nodesLayer.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomScale})`;
+        nodesLayer.style.transformOrigin = 'center center';
+      }
+
+      // Scroll-to-Zoom Handler
+      stereoscopeEl.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        
+        const zoomStep = 0.15;
+        if (e.deltaY < 0) {
+          zoomScale = Math.min(zoomScale + zoomStep, 3.5); // Max zoom in
+        } else {
+          zoomScale = Math.max(zoomScale - zoomStep, 1.0); // Min zoom out
+          if (zoomScale === 1.0) {
+            panX = 0;
+            panY = 0; // Reset pan position when fully zoomed out
+          }
+        }
+        
+        updateTransform();
+      }, { passive: false });
+
+      // View All Pictures Handler
+      viewAllBtn.addEventListener('click', () => {
+        if (activeNode) {
+          activeNode.classList.remove('active');
+          activeNode = null;
+        }
+        photoImages.forEach(img => img.closest('.gallery-item-wrapper').classList.remove('hidden'));
+        
+        // Reset metadata panel
+        infoHueEl.innerHTML = `--&deg;`;
+        infoSatEl.innerHTML = `--%`;
+        infoHexEl.textContent = `#------`;
+        infoSwatchEl.style.backgroundColor = '#9ca3af';
+        selectedColorBadge.style.backgroundColor = '#808080';
+      });
+
+      function rgbToHex(r, g, b) {
+        return "#" + [r, g, b].map(x => {
+          const hex = x.toString(16);
+          return hex.length === 1 ? "0" + hex : hex;
+        }).join('');
+      }
+
+      function rgbToHsl(r, g, b) {
+        r /= 255; g /= 255; b /= 255;
+        let max = Math.max(r, g, b), min = Math.min(r, g, b);
+        let h, s, l = (max + min) / 2;
+
+        if (max === min) {
+          h = s = 0;
+        } else {
+          let d = max - min;
+          s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+          switch (max) {
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+          }
+          h /= 6;
+        }
+        return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
+      }
+
+      async function processImages() {
+        for (let i = 0; i < photoImages.length; i++) {
+          const img = photoImages[i];
+          const wrapper = img.closest('.gallery-item-wrapper');
+
+          await new Promise((resolve) => {
+            const tempImg = new Image();
+            tempImg.crossOrigin = "anonymous";
             
+            tempImg.onload = () => {
+              try {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = 50;
+                canvas.height = 50;
+                ctx.drawImage(tempImg, 0, 0, 50, 50);
+                const data = ctx.getImageData(0, 0, 50, 50).data;
+                
+                // Color quantization bucket map to find top 4 prominent color clusters with percentages
+                const colorBuckets = {};
+                let totalPixels = 0;
 
+                for (let p = 0; p < data.length; p += 4) {
+                  const qr = Math.round(data[p] / 32) * 32;
+                  const qg = Math.round(data[p+1] / 32) * 32;
+                  const qb = Math.round(data[p+2] / 32) * 32;
+                  const key = `${qr},${qg},${qb}`;
 
-        </div>
-</div>
-<!--   <div id="People" class="tabcontent">
-  <p>Images Go here</p>
-</div>
-  <div id="Things" class="tabcontent">
-  <p>Images Go here</p>
-</div> -->
-<!-- </section> -->
-<script>
-function unspoiler(spoiler){
-  spoiler.parentNode.classList.add('nospoiler');
-}
-document.getElementById("defaultOpen").click();
-function openTab(evt, cityName) {
-  var i, tabcontent, tablinks;
-  tabcontent = document.getElementsByClassName("tabcontent");
-  for (i = 0; i < tabcontent.length; i++) {
-    tabcontent[i].style.display = "none";
-  }
-  tablinks = document.getElementsByClassName("tablinks");
-  for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(" active", "");
-  }
-  document.getElementById(cityName).style.display = "block";
-  evt.currentTarget.className += " active";
-};
-</script>
-<!-- <script src="js/main.js"></script> -->
-<script src="js/lazyload.js"></script>
+                  if (!colorBuckets[key]) {
+                    colorBuckets[key] = { r: qr, g: qg, b: qb, count: 0 };
+                  }
+                  colorBuckets[key].count++;
+                  totalPixels++;
+                }
+
+                const sortedBuckets = Object.values(colorBuckets).sort((a, b) => b.count - a.count);
+                const top4 = sortedBuckets.slice(0, 4);
+
+                let top4Sum = top4.reduce((acc, curr) => acc + curr.count, 0);
+                if (top4Sum === 0) top4Sum = 1;
+
+                let allocatedPct = 0;
+                const top4WithPercentages = top4.map((b, idx, arr) => {
+                  let pct;
+                  if (idx === arr.length - 1) {
+                    pct = 100 - allocatedPct;
+                  } else {
+                    pct = Math.round((b.count / top4Sum) * 100);
+                    allocatedPct += pct;
+                  }
+                  return { r: b.r, g: b.g, b: b.b, pct };
+                });
+
+                // Build hover overlay swatches bar at bottom of image wrapper
+                const overlay = document.createElement('div');
+                overlay.className = 'image-swatches-overlay';
+                
+                top4WithPercentages.forEach(swatch => {
+                  const seg = document.createElement('div');
+                  seg.className = 'swatch-segment';
+                  seg.style.width = `${swatch.pct}%`;
+                  const hex = rgbToHex(swatch.r, swatch.g, swatch.b);
+                  seg.style.backgroundColor = hex;
+                  seg.textContent = `${swatch.pct}%`;
+                  
+                  const brightness = (swatch.r * 299 + swatch.g * 587 + swatch.b * 114) / 1000;
+                  seg.style.color = brightness > 140 ? '#111827' : '#ffffff';
+                  seg.style.textShadow = brightness > 140 ? '0 0 2px rgba(255,255,255,0.8)' : '0 0 2px rgba(0,0,0,0.8)';
+                  overlay.appendChild(seg);
+                });
+
+                wrapper.appendChild(overlay);
+
+                // Register nodes for stereoscope from top 4 color clusters
+                top4WithPercentages.forEach((swatch, regIdx) => {
+                  const [hue, sat, light] = rgbToHsl(swatch.r, swatch.g, swatch.b);
+                  const adjustedHue = (hue + (regIdx * 12)) % 360;
+                  const adjustedSat = Math.max(0, Math.min(100, sat));
+
+                  plottedColorNodes.push({
+                    img,
+                    index: i * 4 + regIdx,
+                    hue: adjustedHue,
+                    sat: adjustedSat,
+                    light,
+                    color: { r: swatch.r, g: swatch.g, b: swatch.b }
+                  });
+                });
+
+              } catch (err) {
+                plottedColorNodes.push({
+                  img,
+                  index: i * 4,
+                  hue: (i * 25) % 360,
+                  sat: 60,
+                  light: 50,
+                  color: { r: 128, g: 128, b: 128 }
+                });
+              }
+              resolve();
+            };
+
+            tempImg.onerror = () => resolve();
+            tempImg.src = img.src;
+          });
+        }
+
+        renderSpreadStereoscope();
+      }
+
+      function renderSpreadStereoscope() {
+        nodesLayer.innerHTML = '';
+
+        const centerOffset = 300; // Center point for 600px width/height canvas
+        const maxBoundaryRadius = 270; // Outer perimeter boundary
+
+        plottedColorNodes.forEach((item) => {
+          let posX, posY;
+          
+          // Neutral Gray / #cccccc or low saturation lands at exact center origin (0,0 offset)
+          if (item.sat < 8 || (Math.abs(item.color.r - 204) < 30 && Math.abs(item.color.g - 204) < 30 && Math.abs(item.color.b - 204) < 30)) {
+            posX = centerOffset;
+            posY = centerOffset;
+          } else {
+            // Aggressive explosive positioning mapping out to the boundary using saturation
+            const angleRad = (item.hue / 360) * 2 * Math.PI;
+            const normalizedSat = item.sat / 100;
+            const aggressiveSpread = Math.pow(normalizedSat, 0.35);
+            let radius = 25 + (aggressiveSpread * (maxBoundaryRadius - 25));
+            radius = Math.min(maxBoundaryRadius - 10, Math.max(15, radius));
+
+            posX = centerOffset + radius * Math.cos(angleRad);
+            posY = centerOffset + radius * Math.sin(angleRad);
+          }
+
+          const node = document.createElement('div');
+          node.className = 'plot-node';
+          node.style.left = `${posX}px`;
+          node.style.top = `${posY}px`;
+
+          const hexStr = rgbToHex(item.color.r, item.color.g, item.color.b);
+          node.style.backgroundColor = hexStr;
+
+          const updateMetadataDisplay = () => {
+            infoHueEl.innerHTML = `${item.hue}&deg;`;
+            infoSatEl.innerHTML = `${item.sat}%`;
+            infoHexEl.textContent = hexStr;
+            infoSwatchEl.style.backgroundColor = hexStr;
+            selectedColorBadge.style.backgroundColor = hexStr;
+          };
+
+          const filterByColorRange = () => {
+            const hueThreshold = 30; 
+            const satThreshold = 35;
+
+            if (activeNode === node) {
+              node.classList.remove('active');
+              activeNode = null;
+              photoImages.forEach(img => img.closest('.gallery-item-wrapper').classList.remove('hidden'));
+              infoHueEl.innerHTML = `--&deg;`;
+              infoSatEl.innerHTML = `--%`;
+              infoHexEl.textContent = `#------`;
+              infoSwatchEl.style.backgroundColor = '#9ca3af';
+              selectedColorBadge.style.backgroundColor = '#808080';
+            } else {
+              document.querySelectorAll('.plot-node').forEach(n => n.classList.remove('active'));
+              node.classList.add('active');
+              activeNode = node;
+
+              updateMetadataDisplay();
+
+              photoImages.forEach(img => {
+                const wrapper = img.closest('.gallery-item-wrapper');
+                const matchesForImage = plottedColorNodes.filter(p => p.img === img);
+                const hasMatch = matchesForImage.some(match => {
+                  const hueDiff = Math.abs(match.hue - item.hue);
+                  const shortestHueDiff = Math.min(hueDiff, 360 - hueDiff); 
+                  const satDiff = Math.abs(match.sat - item.sat);
+                  return shortestHueDiff <= hueThreshold && satDiff <= satThreshold;
+                });
+
+                if (hasMatch) {
+                  wrapper.classList.remove('hidden');
+                } else {
+                  wrapper.classList.add('hidden');
+                }
+              });
+            }
+          };
+
+          node.addEventListener('click', (e) => {
+            e.stopPropagation();
+            filterByColorRange();
+          });
+
+          node.addEventListener('mouseenter', () => {
+            updateMetadataDisplay();
+            if (!activeNode) {
+              const hueThreshold = 30;
+              const satThreshold = 35;
+
+              photoImages.forEach(img => {
+                const wrapper = img.closest('.gallery-item-wrapper');
+                const matchesForImage = plottedColorNodes.filter(p => p.img === img);
+                const hasMatch = matchesForImage.some(match => {
+                  const hueDiff = Math.abs(match.hue - item.hue);
+                  const shortestHueDiff = Math.min(hueDiff, 360 - hueDiff);
+                  const satDiff = Math.abs(match.sat - item.sat);
+                  return shortestHueDiff <= hueThreshold && satDiff <= satThreshold;
+                });
+
+                if (hasMatch) {
+                  wrapper.classList.remove('hidden');
+                } else {
+                  wrapper.classList.add('hidden');
+                }
+              });
+            }
+          });
+
+          nodesLayer.appendChild(node);
+        });
+      }
+
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.stereoscope-sidebar') && activeNode) {
+          activeNode.classList.remove('active');
+          activeNode = null;
+          photoImages.forEach(img => img.closest('.gallery-item-wrapper').classList.remove('hidden'));
+          infoHueEl.innerHTML = `--&deg;`;
+          infoSatEl.innerHTML = `--%`;
+          infoHexEl.textContent = `#------`;
+          infoSwatchEl.style.backgroundColor = '#9ca3af';
+          selectedColorBadge.style.backgroundColor = '#808080';
+        }
+      });
+
+      processImages();
+    });
+  </script>
+
+  <script src="js/lazyload.js"></script>
+</body>
 </html>
