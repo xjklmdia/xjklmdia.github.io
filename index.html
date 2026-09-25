@@ -779,7 +779,7 @@
         renderSpreadStereoscope();
       }
 
-      function renderSpreadStereoscope() {
+function renderSpreadStereoscope() {
         nodesLayer.innerHTML = '';
 
         const centerOffset = 300; // Center point for 600px width/height canvas
@@ -788,110 +788,112 @@
         plottedColorNodes.forEach((item) => {
           let posX, posY;
           
-          // Neutral Gray / #cccccc or low saturation lands at exact center origin (0,0 offset)
+          // Neutral Gray / low saturation lands at exact center origin (0,0 offset)
           if (item.sat < 8 || (Math.abs(item.color.r - 204) < 30 && Math.abs(item.color.g - 204) < 30 && Math.abs(item.color.b - 204) < 30)) {
             posX = centerOffset;
             posY = centerOffset;
           } else {
-            // Aggressive explosive positioning mapping out to the boundary using saturation
+            // Hue determines the angle around the circle (0° to 360°)
             const angleRad = (item.hue / 360) * 2 * Math.PI;
-            const normalizedSat = item.sat / 100;
-            const aggressiveSpread = Math.pow(normalizedSat, 0.35);
-            let radius = 25 + (aggressiveSpread * (maxBoundaryRadius - 25));
-            radius = Math.min(maxBoundaryRadius - 10, Math.max(15, radius));
+            
+          // Saturation determines the distance outward from the center
+          const normalizedSat = item.sat / 100;
+          const radiusSpread = Math.pow(normalizedSat, 0.8); // Adjusted curve for smooth radial distribution
+          let radius = 40 + (radiusSpread * (maxBoundaryRadius - 40));
+          radius = Math.min(maxBoundaryRadius - 10, Math.max(20, radius));
 
-            posX = centerOffset + radius * Math.cos(angleRad);
-            posY = centerOffset + radius * Math.sin(angleRad);
+          posX = centerOffset + radius * Math.cos(angleRad);
+          posY = centerOffset + radius * Math.sin(angleRad);
+        }
+
+        const node = document.createElement('div');
+        node.className = 'plot-node';
+        node.style.left = `${posX}px`;
+        node.style.top = `${posY}px`;
+
+        const hexStr = rgbToHex(item.color.r, item.color.g, item.color.b);
+        node.style.backgroundColor = hexStr;
+
+        const updateMetadataDisplay = () => {
+          infoHueEl.innerHTML = `${item.hue}&deg;`;
+          infoSatEl.innerHTML = `${item.sat}%`;
+          infoHexEl.textContent = hexStr;
+          infoSwatchEl.style.backgroundColor = hexStr;
+          selectedColorBadge.style.backgroundColor = hexStr;
+        };
+
+        const filterByColorRange = () => {
+          const hueThreshold = 30; 
+          const satThreshold = 35;
+
+          if (activeNode === node) {
+            node.classList.remove('active');
+            activeNode = null;
+            photoImages.forEach(img => img.closest('.gallery-item-wrapper').classList.remove('hidden'));
+            infoHueEl.innerHTML = `--&deg;`;
+            infoSatEl.innerHTML = `--%`;
+            infoHexEl.textContent = `#------`;
+            infoSwatchEl.style.backgroundColor = '#9ca3af';
+            selectedColorBadge.style.backgroundColor = '#808080';
+          } else {
+            document.querySelectorAll('.plot-node').forEach(n => n.classList.remove('active'));
+            node.classList.add('active');
+            activeNode = node;
+
+            updateMetadataDisplay();
+
+            photoImages.forEach(img => {
+              const wrapper = img.closest('.gallery-item-wrapper');
+              const matchesForImage = plottedColorNodes.filter(p => p.img === img);
+              const hasMatch = matchesForImage.some(match => {
+                const hueDiff = Math.abs(match.hue - item.hue);
+                const shortestHueDiff = Math.min(hueDiff, 360 - hueDiff); 
+                const satDiff = Math.abs(match.sat - item.sat);
+                return shortestHueDiff <= hueThreshold && satDiff <= satThreshold;
+              });
+
+              if (hasMatch) {
+                wrapper.classList.remove('hidden');
+              } else {
+                wrapper.classList.add('hidden');
+              }
+            });
           }
+        };
 
-          const node = document.createElement('div');
-          node.className = 'plot-node';
-          node.style.left = `${posX}px`;
-          node.style.top = `${posY}px`;
+        node.addEventListener('click', (e) => {
+          e.stopPropagation();
+          filterByColorRange();
+        });
 
-          const hexStr = rgbToHex(item.color.r, item.color.g, item.color.b);
-          node.style.backgroundColor = hexStr;
-
-          const updateMetadataDisplay = () => {
-            infoHueEl.innerHTML = `${item.hue}&deg;`;
-            infoSatEl.innerHTML = `${item.sat}%`;
-            infoHexEl.textContent = hexStr;
-            infoSwatchEl.style.backgroundColor = hexStr;
-            selectedColorBadge.style.backgroundColor = hexStr;
-          };
-
-          const filterByColorRange = () => {
-            const hueThreshold = 30; 
+        node.addEventListener('mouseenter', () => {
+          updateMetadataDisplay();
+          if (!activeNode) {
+            const hueThreshold = 30;
             const satThreshold = 35;
 
-            if (activeNode === node) {
-              node.classList.remove('active');
-              activeNode = null;
-              photoImages.forEach(img => img.closest('.gallery-item-wrapper').classList.remove('hidden'));
-              infoHueEl.innerHTML = `--&deg;`;
-              infoSatEl.innerHTML = `--%`;
-              infoHexEl.textContent = `#------`;
-              infoSwatchEl.style.backgroundColor = '#9ca3af';
-              selectedColorBadge.style.backgroundColor = '#808080';
-            } else {
-              document.querySelectorAll('.plot-node').forEach(n => n.classList.remove('active'));
-              node.classList.add('active');
-              activeNode = node;
-
-              updateMetadataDisplay();
-
-              photoImages.forEach(img => {
-                const wrapper = img.closest('.gallery-item-wrapper');
-                const matchesForImage = plottedColorNodes.filter(p => p.img === img);
-                const hasMatch = matchesForImage.some(match => {
-                  const hueDiff = Math.abs(match.hue - item.hue);
-                  const shortestHueDiff = Math.min(hueDiff, 360 - hueDiff); 
-                  const satDiff = Math.abs(match.sat - item.sat);
-                  return shortestHueDiff <= hueThreshold && satDiff <= satThreshold;
-                });
-
-                if (hasMatch) {
-                  wrapper.classList.remove('hidden');
-                } else {
-                  wrapper.classList.add('hidden');
-                }
+            photoImages.forEach(img => {
+              const wrapper = img.closest('.gallery-item-wrapper');
+              const matchesForImage = plottedColorNodes.filter(p => p.img === img);
+              const hasMatch = matchesForImage.some(match => {
+                const hueDiff = Math.abs(match.hue - item.hue);
+                const shortestHueDiff = Math.min(hueDiff, 360 - hueDiff);
+                const satDiff = Math.abs(match.sat - item.sat);
+                return shortestHueDiff <= hueThreshold && satDiff <= satThreshold;
               });
-            }
-          };
 
-          node.addEventListener('click', (e) => {
-            e.stopPropagation();
-            filterByColorRange();
-          });
-
-          node.addEventListener('mouseenter', () => {
-            updateMetadataDisplay();
-            if (!activeNode) {
-              const hueThreshold = 30;
-              const satThreshold = 35;
-
-              photoImages.forEach(img => {
-                const wrapper = img.closest('.gallery-item-wrapper');
-                const matchesForImage = plottedColorNodes.filter(p => p.img === img);
-                const hasMatch = matchesForImage.some(match => {
-                  const hueDiff = Math.abs(match.hue - item.hue);
-                  const shortestHueDiff = Math.min(hueDiff, 360 - hueDiff);
-                  const satDiff = Math.abs(match.sat - item.sat);
-                  return shortestHueDiff <= hueThreshold && satDiff <= satThreshold;
-                });
-
-                if (hasMatch) {
-                  wrapper.classList.remove('hidden');
-                } else {
-                  wrapper.classList.add('hidden');
-                }
-              });
-            }
-          });
-
-          nodesLayer.appendChild(node);
+              if (hasMatch) {
+                wrapper.classList.remove('hidden');
+              } else {
+                wrapper.classList.add('hidden');
+              }
+            });
+          }
         });
-      }
+
+        nodesLayer.appendChild(node);
+      });
+    }
 
       document.addEventListener('click', (e) => {
         if (!e.target.closest('.stereoscope-sidebar') && activeNode) {
