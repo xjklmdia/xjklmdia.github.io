@@ -83,6 +83,11 @@
         border-radius: 8px;
         padding: 1.25rem;
         box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        
+        /* Added to eliminate sticky scrolling shivers */
+        will-change: transform;
+        transform: translateZ(0);
+        backface-visibility: hidden;
       }
     }
 
@@ -245,7 +250,6 @@
       height: 14px;
       margin-left: -7px;
       margin-top: -7px;
-      /* border-radius: 50%; */
       cursor: pointer;
       pointer-events: auto;
       box-shadow: 0 1px 4px rgba(0,0,0,0.2);
@@ -345,19 +349,20 @@
     }
 
     /* Wrapper for image item to anchor color swatches overlay on hover */
-/* Wrapper for image item to anchor color swatches overlay on hover */
     .gallery-item-wrapper {
       position: relative;
       margin-bottom: 15px;
       break-inside: avoid;
       border-radius: 4px;
       overflow: hidden;
-      /* Smoothly animate opacity, scale, height, and margins */
       opacity: 1;
       transform: scale(1);
-      max-height: 2000px; /* Large enough to encompass any image height */
+      max-height: 2000px;
       visibility: visible;
       transition: opacity 0.35s ease, transform 0.35s ease, max-height 0.35s ease, margin-bottom 0.35s ease, visibility 0.35s ease;
+      
+      /* Added to prevent layout thrashing and hover shivers */
+      contain: layout paint;
     }
 
     .gallery-item-wrapper.hidden {
@@ -493,7 +498,7 @@
                 <span class="metric-val" id="info-sat">--%</span>
               </div>
               <div class="info-match-row">
-                              <div class="selected-color-preview" id="selected-color-badge" style="background-color: #808080;"></div>
+                <div class="selected-color-preview" id="selected-color-badge" style="background-color: #808080;"></div>
                 <div class="match-swatch" id="info-swatch"></div>
                 <span class="match-hex" id="info-hex">#------</span>
               </div>
@@ -502,87 +507,85 @@
         </div>
       </aside>
 
-<div class="gallery-container">
+      <div class="gallery-container">
         <div class="masonry-gallery" id="masonry-gallery">
           <!-- Group 1 -->
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (38).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (45).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (20).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (49).JPG"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (2).png"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (31).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (5).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (9).png"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (15).PNG"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (27).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (10).png"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (22).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (13).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (7).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/photoreel (7).PNG"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (44).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (41).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (17).png"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (3).png"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/photoreel (6).PNG"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (29).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people.JPG"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (47).JPG"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (29).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (38).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (45).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (20).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (49).JPG"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (2).png"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (31).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (5).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (9).png"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (15).PNG"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (27).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (10).png"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (22).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (13).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (7).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/photoreel (7).PNG"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (44).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (41).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (17).png"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (3).png"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/photoreel (6).PNG"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (29).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people.JPG"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (47).JPG"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (29).jpg"></div>
 
           <!-- Group 2 -->
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (23).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (48).JPG"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (30).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (18).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (42).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (19).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (36).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (14).PNG"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (16).PNG"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (8).png"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (34).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (2).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (17).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (40).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (24).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (50).JPG"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (10).jpg"></div>
-<!-- <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (46).JPG"></div> -->
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (1).png"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (25).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (7).png"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (5).png"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (13).png"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (3).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (12).JPG"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (23).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (48).JPG"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (30).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (18).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (42).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (19).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (36).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (14).PNG"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (16).PNG"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (8).png"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (34).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (2).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (17).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (40).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (24).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (50).JPG"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (10).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (1).png"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (25).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (7).png"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (5).png"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (13).png"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (3).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (12).JPG"></div>
 
           <!-- Group 3 -->
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (43).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (11).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/photoreel (4).PNG"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (37).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (32).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (21).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (6).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (18).PNG"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (11).png"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (15).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (4).png"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (9).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (28).jpg"></div>
-<!-- <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (51).JPG"></div> -->
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (26).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (4).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (1).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (33).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (6).png"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (39).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (12).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (16).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (8).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (35).jpg"></div>
-<div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (14).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (43).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (11).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/photoreel (4).PNG"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (37).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (32).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (21).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (6).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (18).PNG"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (11).png"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (15).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (4).png"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (9).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (28).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (26).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (4).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (1).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (33).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (6).png"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (39).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (12).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (16).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (8).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (35).jpg"></div>
+          <div class="gallery-item-wrapper"><img class="lazy demo-image" crossorigin="anonymous" src="img/photography/img_people (14).jpg"></div>
         </div>
       </div>
     </div>
@@ -1017,12 +1020,10 @@
         plottedColorNodes.forEach((item) => {
           let posX, posY;
           
-          // Determine angle: use Hue for chromatic colors, or an index-based angle for grays
           const angleRad = (item.sat < 8)
             ? (((item.index * 37) % 360) / 360) * 2 * Math.PI
             : (item.hue / 360) * 2 * Math.PI;
 
-          // Determine radius using Lightness (0% = center/dark, 100% = edge/light)
           const normalizedLight = item.light / 100;
           const lightCurve = Math.pow(normalizedLight, 0.85);
           let radius = 25 + (lightCurve * (maxBoundaryRadius - 25));
@@ -1186,8 +1187,8 @@
     });
 
     document.addEventListener('contextmenu', (e) => {
-  e.preventDefault();
-});
+      e.preventDefault();
+    });
   </script>
 
   <script src="js/lazyload.js"></script>
